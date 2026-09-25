@@ -2,15 +2,15 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"github.com/mooreApps22/go-poker-go/internal/poker"
 )
 
 func main() {
 	fmt.Println("Poker server starting...")
-
-
-
-	for {
-		time.Sleep(time.Second)
+	card := poker.Card{
+		Rank: poker.Ace,
+		Suit: poker.Spades,
 	}
+
+	fmt.Println(card)
 }

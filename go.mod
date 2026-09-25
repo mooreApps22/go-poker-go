@@ -1,3 +1,3 @@
-module github.com/go-poker-go/poker
+module github.com/mooreApps22/go-poker-go
 
 go 1.18
