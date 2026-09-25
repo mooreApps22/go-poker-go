@@ -65,7 +65,7 @@ func (s Suit) String() string {
 	case Spades:
 		return "♠"
 	case Hearts:
-		return "♥"
+		return "♥ "
 	case Clubs:
 		return "♣"
 	case Diamonds:
