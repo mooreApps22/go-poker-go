@@ -18,7 +18,10 @@ func main() {
 
 	fmt.Println(player1.String())
 
-	card1 := deck.Draw()
-
-	fmt.Println(card1)
+	card1, err := deck.Draw()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	fmt.Println(card1.PrettyCardString())
 }

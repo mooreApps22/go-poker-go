@@ -1,6 +1,7 @@
 package poker
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"time"
@@ -51,8 +52,12 @@ func (deck *Deck) Shuffle() {
 	}
 }
 
-func (deck *Deck) Draw() Card {
+func (deck *Deck) Draw() (Card, error) {
+	if deck.next >= len(deck.cards) {
+		return Card{}, errors.New("cannot draw from empty deck")
+	}
+
 	nextCard := deck.cards[deck.next]
 	deck.next++
-	return nextCard
+	return nextCard, nil
 }
