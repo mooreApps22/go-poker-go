@@ -1,5 +1,7 @@
 package poker
 
+import "fmt"
+
 type Rank uint8
 
 const (
@@ -63,13 +65,13 @@ const (
 func (s Suit) String() string {
 	switch s {
 	case Spades:
-		return "♠"
-	case Hearts:
-		return "♥ "
+		return "♠\uFE0E"
 	case Clubs:
-		return "♣"
+		return "♣\uFE0E"
 	case Diamonds:
-		return "♦"
+		return "♦\uFE0E"
+	case Hearts:
+		return "❤\uFE0E"
 	default:
 		return "?"
 	}
@@ -82,4 +84,47 @@ type Card struct {
 
 func (card Card) String() string {
 	return "[" + card.Rank.String() + card.Suit.String() + "]"
+}
+
+func (card Card) PrettyRow(row int) string {
+	switch row {
+	case 0:
+		return "┌─────┐"
+	case 1:
+		return fmt.Sprintf("┊ %-2v%v ┊", card.Rank, card.Suit)
+	case 2:
+		return fmt.Sprintf("┊ %v%2v ┊", card.Suit, card.Rank)
+	case 3:
+		return "└─────┘"
+	default:
+		return ""
+	}
+}
+
+func (card Card) PrettyCardString() string {
+	result := ""
+
+	for row := 0; row < 4; row++ {
+		result += card.PrettyRow(row)
+
+		if row < 3 {
+			result += "\n"
+		}
+	}
+	return result
+}
+
+func PrettyCardsString(cards []Card) string {
+	result := ""
+	for row := 0; row < 4; row++ {
+		for _, card := range cards {
+			result += card.PrettyRow(row)
+			result += " "
+		}
+
+		if row < 3 {
+			result += "\n"
+		}
+	}
+	return result
 }

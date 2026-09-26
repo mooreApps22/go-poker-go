@@ -10,5 +10,7 @@ func main() {
 
 	deck := poker.NewDeck()
 
-	deck.PrintDeck()
+	deck.Shuffle()
+
+	deck.Print()
 }
