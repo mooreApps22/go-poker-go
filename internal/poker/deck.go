@@ -8,6 +8,7 @@ import (
 
 type Deck struct {
 	cards [52]Card
+	next  int
 }
 
 func NewDeck() Deck {
@@ -48,4 +49,10 @@ func (deck *Deck) Shuffle() {
 		deck.cards[i], deck.cards[randomIndex] =
 			deck.cards[randomIndex], deck.cards[i]
 	}
+}
+
+func (deck *Deck) Draw() Card {
+	nextCard := deck.cards[deck.next]
+	deck.next++
+	return nextCard
 }

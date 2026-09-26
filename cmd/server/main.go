@@ -13,4 +13,12 @@ func main() {
 	deck.Shuffle()
 
 	deck.Print()
+
+	player1 := poker.NewPlayer(1, "Skyy", 1_000_000)
+
+	fmt.Println(player1.String())
+
+	card1 := deck.Draw()
+
+	fmt.Println(card1)
 }
