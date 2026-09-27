@@ -6,22 +6,30 @@ import (
 )
 
 func main() {
-	fmt.Println("Poker server starting...")
-
-	deck := poker.NewDeck()
-
-	deck.Shuffle()
-
-	deck.Print()
+	fmt.Println("Poker server starting...\n")
 
 	player1 := poker.NewPlayer(1, "Skyy", 1_000_000)
+	player2 := poker.NewPlayer(2, "Emily", 1_000_000)
+	player3 := poker.NewPlayer(3, "Sheeba", 1_000_000)
+	player4 := poker.NewPlayer(4, "Cleo", 1_000_000)
 
-	fmt.Println(player1.String())
+	players := []*poker.Player{
+		&player1,
+		&player2,
+		&player3,
+		&player4,
+	}
 
-	card1, err := deck.Draw()
+	hand := poker.NewHand(players)
+	err := hand.DealHoleCards()
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
-	fmt.Println(card1.PrettyCardString())
+
+	for _, player := range players {
+		fmt.Println(player)
+		fmt.Println(poker.PrettyCardsString(player.HoleCards[:]))
+		fmt.Println()
+	}
 }

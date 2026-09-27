@@ -114,6 +114,7 @@ func (card Card) PrettyCardString() string {
 	return result
 }
 
+// Packet Function because no receiver
 func PrettyCardsString(cards []Card) string {
 	result := ""
 	for row := 0; row < 4; row++ {
