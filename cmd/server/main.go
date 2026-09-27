@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/mooreApps22/go-poker-go/internal/poker"
 )
 
@@ -47,4 +48,18 @@ func main() {
 
 	fmt.Println("Community River Card:")
 	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
+
+	//Test
+	testCards := [5]poker.Card{
+		{Rank: poker.Five, Suit: poker.Clubs},
+		{Rank: poker.Ace, Suit: poker.Clubs},
+		{Rank: poker.Three, Suit: poker.Clubs},
+		{Rank: poker.Two, Suit: poker.Clubs},
+		{Rank: poker.Four, Suit: poker.Clubs},
+	}
+
+	fmt.Println("Test Cards:")
+	fmt.Println(poker.PrettyCardsString(testCards[:]))
+
+	poker.EvaluateBestFiveCardHand(testCards)
 }
