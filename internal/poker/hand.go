@@ -1,10 +1,22 @@
 package poker
 
+type HandPhase uint8
+
+const (
+	SetUp HandPhase = iota
+	PreFlop
+	Flop
+	Turn
+	River
+	Showdown
+)
+
 type Hand struct {
 	deck                Deck
 	players             []*Player
 	communityCards      [5]Card
 	communityCardsDealt int
+	phase               HandPhase
 }
 
 func NewHand(players []*Player) Hand {
@@ -14,6 +26,7 @@ func NewHand(players []*Player) Hand {
 	return Hand{
 		deck:    deck,
 		players: players,
+		phase:   SetUp,
 	}
 }
 
@@ -28,6 +41,7 @@ func (hand *Hand) DealHoleCards() error {
 			player.HoleCards[holeCardIndex] = card
 		}
 	}
+	hand.phase = PreFlop
 	return nil
 }
 
@@ -45,6 +59,7 @@ func (hand *Hand) DealFlopCards() error {
 		hand.communityCards[flopCardIndex] = card
 	}
 	hand.communityCardsDealt += 3
+	hand.phase = Flop
 	return nil
 }
 
@@ -64,6 +79,7 @@ func (hand *Hand) DealTurnCard() error {
 	}
 	hand.communityCards[3] = turnCard
 	hand.communityCardsDealt += 1
+	hand.phase = Turn
 	return nil
 }
 
@@ -79,5 +95,6 @@ func (hand *Hand) DealRiverCard() error {
 	}
 	hand.communityCards[4] = riverCard
 	hand.communityCardsDealt += 1
+	hand.phase = River
 	return nil
 }
