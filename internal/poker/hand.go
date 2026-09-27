@@ -51,3 +51,33 @@ func (hand *Hand) DealFlopCards() error {
 func (hand Hand) CommunityCards() []Card {
 	return hand.communityCards[:hand.communityCardsDealt]
 }
+
+func (hand *Hand) DealTurnCard() error {
+	_, err := hand.deck.Draw()
+	if err != nil {
+		return err
+	}
+
+	turnCard, err := hand.deck.Draw()
+	if err != nil {
+		return err
+	}
+	hand.communityCards[3] = turnCard
+	hand.communityCardsDealt += 1
+	return nil
+}
+
+func (hand *Hand) DealRiverCard() error {
+	_, err := hand.deck.Draw()
+	if err != nil {
+		return err
+	}
+
+	riverCard, err := hand.deck.Draw()
+	if err != nil {
+		return err
+	}
+	hand.communityCards[4] = riverCard
+	hand.communityCardsDealt += 1
+	return nil
+}

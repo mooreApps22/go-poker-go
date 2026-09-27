@@ -37,4 +37,14 @@ func main() {
 
 	fmt.Println("Community Flop Cards:")
 	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
+
+	hand.DealTurnCard()
+
+	fmt.Println("Community Turn Card:")
+	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
+
+	hand.DealRiverCard()
+
+	fmt.Println("Community River Card:")
+	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
 }
