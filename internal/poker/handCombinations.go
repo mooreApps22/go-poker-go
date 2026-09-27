@@ -58,14 +58,23 @@ func findHighCards(rankCounts [15]int) [5]Rank {
 	return highCards
 }
 
-func checkIfStraight(rankCounts [15]int) bool {
+// A Wheel is when a Straight == A, 5, 4, 3, 2, but 5 is treated as the High Card
+func specialWheelStraightTieBreakerRearrangement(ranks *[5]Rank) {
+	ranks[0] = Five
+	ranks[1] = Four
+	ranks[2] = Three
+	ranks[3] = Two
+	ranks[4] = Ace
+}
+
+func checkIfStraight(rankCounts [15]int) (bool, bool) {
 
 	if rankCounts[Ace] == 1 &&
 		rankCounts[Two] == 1 &&
 		rankCounts[Three] == 1 &&
 		rankCounts[Four] == 1 &&
 		rankCounts[Five] == 1 {
-		return true
+		return true, true
 	}
 	straightTally := 0
 	straightTallyBegan := false
@@ -74,23 +83,28 @@ func checkIfStraight(rankCounts [15]int) bool {
 			if straightTallyBegan == false {
 				continue
 			} else {
-				return false
+				return false, false
 			}
 		} else if rankCounts[rank] > 1 {
-			return false
+			return false, false
 		} else {
 			straightTallyBegan = true
 			straightTally += 1
 		}
 	}
-	return straightTally == 5
+	return straightTally == 5, false
 }
 
 func EvaluateBestFiveCardHand(cards [5]Card) HandValue {
 	var handValue HandValue
 	isFlush := checkIfFlush(cards)
 	rankCounts := findRankCounts(cards)
-	isStraight := checkIfStraight(rankCounts)
+	handValue.Tiebreakers = findHighCards(rankCounts)
+	isStraight, isWheel := checkIfStraight(rankCounts)
+	//Special Wheel Case Fix
+	if isWheel {
+		specialWheelStraightTieBreakerRearrangement(&handValue.Tiebreakers)
+	}
 
 	for rank := Two; rank <= Ace; rank++ {
 		fmt.Println("Rank: ", rank, "Count: ", rankCounts[rank])
@@ -106,5 +120,8 @@ func EvaluateBestFiveCardHand(cards [5]Card) HandValue {
 	} else {
 		fmt.Println("This hand is NOT STRAIGHT!!")
 	}
+
+	fmt.Println("High Cards: ", handValue.Tiebreakers)
+
 	return handValue
 }
