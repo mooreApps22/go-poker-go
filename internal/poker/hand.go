@@ -1,9 +1,10 @@
 package poker
 
 type Hand struct {
-	deck      Deck
-	players   []*Player
-	community [5]Card
+	deck                Deck
+	players             []*Player
+	communityCards      [5]Card
+	communityCardsDealt int
 }
 
 func NewHand(players []*Player) Hand {
@@ -28,4 +29,25 @@ func (hand *Hand) DealHoleCards() error {
 		}
 	}
 	return nil
+}
+
+func (hand *Hand) DealFlopCards() error {
+	_, err := hand.deck.Draw()
+	if err != nil {
+		return err
+	}
+
+	for flopCardIndex := 0; flopCardIndex < 3; flopCardIndex++ {
+		card, err := hand.deck.Draw()
+		if err != nil {
+			return err
+		}
+		hand.communityCards[flopCardIndex] = card
+	}
+	hand.communityCardsDealt += 3
+	return nil
+}
+
+func (hand Hand) CommunityCards() []Card {
+	return hand.communityCards[:hand.communityCardsDealt]
 }

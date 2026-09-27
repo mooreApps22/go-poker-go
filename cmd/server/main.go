@@ -32,4 +32,9 @@ func main() {
 		fmt.Println(poker.PrettyCardsString(player.HoleCards[:]))
 		fmt.Println()
 	}
+
+	hand.DealFlopCards()
+
+	fmt.Println("Community Flop Cards:")
+	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
 }
