@@ -17,7 +17,7 @@ const (
 )
 
 type HandValue struct {
-	Rank        HandRank
+	Category    HandRank
 	Tiebreakers [5]Rank
 }
 
@@ -110,6 +110,7 @@ func EvaluateBestFiveCardHand(cards [5]Card) HandValue {
 		fmt.Println("Rank: ", rank, "Count: ", rankCounts[rank])
 	}
 
+	//Just for testing for now
 	if isFlush {
 		fmt.Println("This hand is FLUSH!!")
 	} else {
@@ -122,6 +123,26 @@ func EvaluateBestFiveCardHand(cards [5]Card) HandValue {
 	}
 
 	fmt.Println("High Cards: ", handValue.Tiebreakers)
+
+	if isFlush && isStraight {
+		handValue.Category = StraightFlush
+	} else if checkForFourOfAKind(rankCounts) {
+		handValue.Category = FourOfAKind
+	} else if checkForFullHouse(rankCounts) {
+		handValue.Category = FullHouse
+	} else if isFlush {
+		handValue.Category = Flush
+	} else if isStraight {
+		handValue.Category = Straight
+	} else if checkForThreeOfAKind(rankCounts) {
+		handValue.Category = ThreeOfAKind
+	} else if checkForTwoPair(rankCounts) {
+		handValue.Category = TwoPair
+	} else if checkForOnePair(rankCounts) {
+		handValue.Category = OnePair
+	} else {
+		handValue.Category = HighCard
+	}
 
 	return handValue
 }
