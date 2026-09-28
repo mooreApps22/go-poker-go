@@ -28,21 +28,23 @@ func main() {
 		return
 	}
 
-	for _, player := range players {
-		fmt.Println(player)
-		fmt.Println(poker.PrettyCardsString(player.HoleCards[:]))
-		fmt.Println()
-	}
+	/*
+		for _, player := range players {
+			fmt.Println(player)
+			fmt.Println(poker.PrettyCardsString(player.HoleCards[:]))
+			fmt.Println()
+		}
+	*/
 
 	hand.DealFlopCards()
 
-	fmt.Println("Community Flop Cards:")
-	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
+	//	fmt.Println("Community Flop Cards:")
+	//	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
 
 	hand.DealTurnCard()
 
-	fmt.Println("Community Turn Card:")
-	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
+	//	fmt.Println("Community Turn Card:")
+	//	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
 
 	hand.DealRiverCard()
 
@@ -50,16 +52,41 @@ func main() {
 	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
 
 	//Test
-	testCards := [5]poker.Card{
+
+	communityCards := hand.CommunityCards()
+	var communityHand [5]poker.Card
+	copy(communityHand[:], communityCards)
+
+	communityHandValue := poker.EvaluateBestFiveCardHand(communityHand)
+	fmt.Println(communityHandValue.Category.String())
+	fmt.Println()
+
+	testCards1 := [5]poker.Card{
 		{Rank: poker.Five, Suit: poker.Clubs},
-		{Rank: poker.Ace, Suit: poker.Clubs},
+		{Rank: poker.Five, Suit: poker.Hearts},
 		{Rank: poker.Three, Suit: poker.Clubs},
+		{Rank: poker.Three, Suit: poker.Diamonds},
+		{Rank: poker.Three, Suit: poker.Spades},
+	}
+
+	testCards2 := [5]poker.Card{
+		{Rank: poker.Five, Suit: poker.Clubs},
+		{Rank: poker.Ace, Suit: poker.Hearts},
+		{Rank: poker.Queen, Suit: poker.Clubs},
 		{Rank: poker.Two, Suit: poker.Clubs},
 		{Rank: poker.Four, Suit: poker.Clubs},
 	}
 
 	fmt.Println("Test Cards:")
-	fmt.Println(poker.PrettyCardsString(testCards[:]))
 
-	poker.EvaluateBestFiveCardHand(testCards)
+	fmt.Println(poker.PrettyCardsString(testCards1[:]))
+	handValue1 := poker.EvaluateBestFiveCardHand(testCards1)
+	fmt.Println(handValue1.Category.String())
+	fmt.Println()
+
+	fmt.Println(poker.PrettyCardsString(testCards2[:]))
+	handValue2 := poker.EvaluateBestFiveCardHand(testCards2)
+	fmt.Println(handValue2.Category.String())
+	fmt.Println()
+
 }

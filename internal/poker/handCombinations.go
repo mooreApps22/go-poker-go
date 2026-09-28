@@ -21,23 +21,37 @@ type HandValue struct {
 	Tiebreakers [5]Rank
 }
 
+func (category HandRank) String() string {
+	switch category {
+	case HighCard:
+		return "High Card"
+	case OnePair:
+		return "One Pair"
+	case TwoPair:
+		return "Two Pair"
+	case ThreeOfAKind:
+		return "Three of A Kind"
+	case Straight:
+		return "Straight"
+	case Flush:
+		return "Flush"
+	case FullHouse:
+		return "Full House"
+	case FourOfAKind:
+		return "Four of A Kind"
+	case StraightFlush:
+		return "Straight Flush"
+	default:
+		return "?"
+	}
+}
+
 func findRankCounts(cards [5]Card) [15]int {
 	var rankCounts [15]int
 	for _, card := range cards {
 		rankCounts[card.Rank] += 1
 	}
 	return rankCounts
-}
-
-func checkIfFlush(cards [5]Card) bool {
-	suitSample := cards[0].Suit
-
-	for _, card := range cards[1:] {
-		if suitSample != card.Suit {
-			return false
-		}
-	}
-	return true
 }
 
 func findHighCards(rankCounts [15]int) [5]Rank {
@@ -58,43 +72,6 @@ func findHighCards(rankCounts [15]int) [5]Rank {
 	return highCards
 }
 
-// A Wheel is when a Straight == A, 5, 4, 3, 2, but 5 is treated as the High Card
-func specialWheelStraightTieBreakerRearrangement(ranks *[5]Rank) {
-	ranks[0] = Five
-	ranks[1] = Four
-	ranks[2] = Three
-	ranks[3] = Two
-	ranks[4] = Ace
-}
-
-func checkIfStraight(rankCounts [15]int) (bool, bool) {
-
-	if rankCounts[Ace] == 1 &&
-		rankCounts[Two] == 1 &&
-		rankCounts[Three] == 1 &&
-		rankCounts[Four] == 1 &&
-		rankCounts[Five] == 1 {
-		return true, true
-	}
-	straightTally := 0
-	straightTallyBegan := false
-	for rank := Two; rank <= Ace; rank++ {
-		if rankCounts[rank] == 0 {
-			if straightTallyBegan == false {
-				continue
-			} else {
-				return false, false
-			}
-		} else if rankCounts[rank] > 1 {
-			return false, false
-		} else {
-			straightTallyBegan = true
-			straightTally += 1
-		}
-	}
-	return straightTally == 5, false
-}
-
 func EvaluateBestFiveCardHand(cards [5]Card) HandValue {
 	var handValue HandValue
 	isFlush := checkIfFlush(cards)
@@ -104,22 +81,6 @@ func EvaluateBestFiveCardHand(cards [5]Card) HandValue {
 	//Special Wheel Case Fix
 	if isWheel {
 		specialWheelStraightTieBreakerRearrangement(&handValue.Tiebreakers)
-	}
-
-	for rank := Two; rank <= Ace; rank++ {
-		fmt.Println("Rank: ", rank, "Count: ", rankCounts[rank])
-	}
-
-	//Just for testing for now
-	if isFlush {
-		fmt.Println("This hand is FLUSH!!")
-	} else {
-		fmt.Println("This hand is NOT FLUSH!!")
-	}
-	if isStraight {
-		fmt.Println("This hand is STRAIGHT!!")
-	} else {
-		fmt.Println("This hand is NOT STRAIGHT!!")
 	}
 
 	fmt.Println("High Cards: ", handValue.Tiebreakers)
