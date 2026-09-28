@@ -1,7 +1,5 @@
 package poker
 
-import "fmt"
-
 type HandRank uint8
 
 const (
@@ -19,6 +17,33 @@ const (
 type HandValue struct {
 	Category    HandRank
 	Tiebreakers [5]Rank
+}
+
+func arrangeTieBreakers(handValue *HandValue, rankCounts [15]int) {
+	switch handValue.Category {
+	case HighCard:
+		//Free
+		return
+	case OnePair:
+		return
+	case TwoPair:
+		return
+	case ThreeOfAKind:
+		return
+	case Straight:
+		//Free
+	case Flush:
+		//Free
+		return
+	case FullHouse:
+		return
+	case FourOfAKind:
+		return
+	case StraightFlush:
+		//Free
+	default:
+		return
+	}
 }
 
 func (category HandRank) String() string {
@@ -83,8 +108,6 @@ func EvaluateBestFiveCardHand(cards [5]Card) HandValue {
 		specialWheelStraightTieBreakerRearrangement(&handValue.Tiebreakers)
 	}
 
-	fmt.Println("High Cards: ", handValue.Tiebreakers)
-
 	if isFlush && isStraight {
 		handValue.Category = StraightFlush
 	} else if checkForFourOfAKind(rankCounts) {
@@ -104,6 +127,8 @@ func EvaluateBestFiveCardHand(cards [5]Card) HandValue {
 	} else {
 		handValue.Category = HighCard
 	}
+
+	arrangeTieBreakers(&handValue, rankCounts)
 
 	return handValue
 }

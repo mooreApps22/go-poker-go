@@ -59,6 +59,7 @@ func main() {
 
 	communityHandValue := poker.EvaluateBestFiveCardHand(communityHand)
 	fmt.Println(communityHandValue.Category.String())
+	fmt.Println("Tiebreakers: ", communityHandValue.Tiebreakers)
 	fmt.Println()
 
 	testCards1 := [5]poker.Card{
@@ -82,11 +83,13 @@ func main() {
 	fmt.Println(poker.PrettyCardsString(testCards1[:]))
 	handValue1 := poker.EvaluateBestFiveCardHand(testCards1)
 	fmt.Println(handValue1.Category.String())
+	fmt.Println("Tiebreakers: ", handValue1.Tiebreakers)
 	fmt.Println()
 
 	fmt.Println(poker.PrettyCardsString(testCards2[:]))
 	handValue2 := poker.EvaluateBestFiveCardHand(testCards2)
 	fmt.Println(handValue2.Category.String())
+	fmt.Println("Tiebreakers: ", handValue2.Tiebreakers)
 	fmt.Println()
 
 }
