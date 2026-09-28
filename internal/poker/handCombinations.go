@@ -19,33 +19,6 @@ type HandValue struct {
 	Tiebreakers [5]Rank
 }
 
-func arrangeTieBreakers(handValue *HandValue, rankCounts [15]int) {
-	switch handValue.Category {
-	case HighCard:
-		//Free
-		return
-	case OnePair:
-		return
-	case TwoPair:
-		return
-	case ThreeOfAKind:
-		return
-	case Straight:
-		//Free
-	case Flush:
-		//Free
-		return
-	case FullHouse:
-		return
-	case FourOfAKind:
-		return
-	case StraightFlush:
-		//Free
-	default:
-		return
-	}
-}
-
 func (category HandRank) String() string {
 	switch category {
 	case HighCard:

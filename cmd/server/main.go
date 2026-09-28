@@ -64,16 +64,16 @@ func main() {
 
 	testCards1 := [5]poker.Card{
 		{Rank: poker.Five, Suit: poker.Clubs},
-		{Rank: poker.Five, Suit: poker.Hearts},
+		{Rank: poker.Three, Suit: poker.Hearts},
 		{Rank: poker.Three, Suit: poker.Clubs},
 		{Rank: poker.Three, Suit: poker.Diamonds},
 		{Rank: poker.Three, Suit: poker.Spades},
 	}
 
 	testCards2 := [5]poker.Card{
-		{Rank: poker.Five, Suit: poker.Clubs},
+		{Rank: poker.Ace, Suit: poker.Clubs},
 		{Rank: poker.Ace, Suit: poker.Hearts},
-		{Rank: poker.Queen, Suit: poker.Clubs},
+		{Rank: poker.Ace, Suit: poker.Diamonds},
 		{Rank: poker.Two, Suit: poker.Clubs},
 		{Rank: poker.Four, Suit: poker.Clubs},
 	}
