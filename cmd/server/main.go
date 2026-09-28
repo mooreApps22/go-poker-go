@@ -9,10 +9,10 @@ import (
 func main() {
 	fmt.Println("Poker server starting...\n")
 
-	player1 := poker.NewPlayer(1, "Skyy", 1_000_000)
-	player2 := poker.NewPlayer(2, "Emily", 1_000_000)
-	player3 := poker.NewPlayer(3, "Sheeba", 1_000_000)
-	player4 := poker.NewPlayer(4, "Cleo", 1_000_000)
+	player1 := poker.NewPlayer(1, "Adam", 1_000_000)
+	player2 := poker.NewPlayer(2, "Bill", 1_000_000)
+	player3 := poker.NewPlayer(3, "Cathy", 1_000_000)
+	player4 := poker.NewPlayer(4, "Debra", 1_000_000)
 
 	players := []*poker.Player{
 		&player1,
@@ -28,13 +28,11 @@ func main() {
 		return
 	}
 
-	/*
-		for _, player := range players {
-			fmt.Println(player)
-			fmt.Println(poker.PrettyCardsString(player.HoleCards[:]))
-			fmt.Println()
-		}
-	*/
+	for _, player := range players {
+		fmt.Println(player)
+		fmt.Println(poker.PrettyCardsString(player.HoleCards[:]))
+		fmt.Println()
+	}
 
 	hand.DealFlopCards()
 
@@ -52,53 +50,24 @@ func main() {
 	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
 
 	//Test
+	player1BestHandValue := poker.FindBestHandValue(hand.GetCommunityCards(), player1.HoleCards)
+	player2BestHandValue := poker.FindBestHandValue(hand.GetCommunityCards(), player2.HoleCards)
+	player3BestHandValue := poker.FindBestHandValue(hand.GetCommunityCards(), player3.HoleCards)
+	player4BestHandValue := poker.FindBestHandValue(hand.GetCommunityCards(), player4.HoleCards)
 
-	communityCards := hand.CommunityCards()
-	var communityHand [5]poker.Card
-	copy(communityHand[:], communityCards)
+	fmt.Println("Adam's Best Hand: ")
+	fmt.Println(player1BestHandValue.Category.String())
+	fmt.Println("Tiebreakers: ", player1BestHandValue.Tiebreakers)
 
-	communityHandValue := poker.EvaluateBestFiveCardHand(communityHand)
-	fmt.Println(communityHandValue.Category.String())
-	fmt.Println("Tiebreakers: ", communityHandValue.Tiebreakers)
-	fmt.Println()
+	fmt.Println("Bill's Best Hand: ")
+	fmt.Println(player2BestHandValue.Category.String())
+	fmt.Println("Tiebreakers: ", player2BestHandValue.Tiebreakers)
 
-	testCards1 := [5]poker.Card{
-		{Rank: poker.Five, Suit: poker.Clubs},
-		{Rank: poker.Three, Suit: poker.Hearts},
-		{Rank: poker.Three, Suit: poker.Clubs},
-		{Rank: poker.Three, Suit: poker.Diamonds},
-		{Rank: poker.Three, Suit: poker.Spades},
-	}
+	fmt.Println("Cathy's Best Hand: ")
+	fmt.Println(player3BestHandValue.Category.String())
+	fmt.Println("Tiebreakers: ", player3BestHandValue.Tiebreakers)
 
-	testCards2 := [5]poker.Card{
-		{Rank: poker.Ace, Suit: poker.Clubs},
-		{Rank: poker.Ace, Suit: poker.Hearts},
-		{Rank: poker.Ace, Suit: poker.Diamonds},
-		{Rank: poker.Two, Suit: poker.Clubs},
-		{Rank: poker.Four, Suit: poker.Clubs},
-	}
-
-	fmt.Println("Test Cards:")
-
-	fmt.Println(poker.PrettyCardsString(testCards1[:]))
-	handValue1 := poker.EvaluateBestFiveCardHand(testCards1)
-	fmt.Println(handValue1.Category.String())
-	fmt.Println("Tiebreakers: ", handValue1.Tiebreakers)
-	fmt.Println()
-
-	fmt.Println(poker.PrettyCardsString(testCards2[:]))
-	handValue2 := poker.EvaluateBestFiveCardHand(testCards2)
-	fmt.Println(handValue2.Category.String())
-	fmt.Println("Tiebreakers: ", handValue2.Tiebreakers)
-	fmt.Println()
-
-	winner, isTied := poker.FindWinningHandValue(handValue2, handValue1)
-	if !isTied {
-		if winner == handValue1 {
-			fmt.Println("Winner: handValue1")
-		} else {
-			fmt.Println("Winner: handValue2")
-		}
-	}
-
+	fmt.Println("Debra's Best Hand: ")
+	fmt.Println(player4BestHandValue.Category.String())
+	fmt.Println("Tiebreakers: ", player4BestHandValue.Tiebreakers)
 }

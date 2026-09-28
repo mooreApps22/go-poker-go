@@ -19,6 +19,10 @@ type Hand struct {
 	phase               HandPhase
 }
 
+func (hand Hand) GetCommunityCards() [5]Card {
+	return hand.communityCards
+}
+
 func NewHand(players []*Player) Hand {
 	deck := NewDeck()
 	deck.Shuffle()
