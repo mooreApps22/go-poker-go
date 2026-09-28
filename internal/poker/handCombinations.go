@@ -19,6 +19,39 @@ type HandValue struct {
 	Tiebreakers [5]Rank
 }
 
+func higherCategory(handValueA HandValue, handValueB HandValue) HandValue {
+
+	if handValueA.Category > handValueB.Category {
+		return handValueA
+	}
+	return handValueB
+}
+
+func compareHandValueTiebreakers(handValueA HandValue, handValueB HandValue) (
+	HandValue, bool) {
+	tiebreakerA := handValueA.Tiebreakers
+	tiebreakerB := handValueB.Tiebreakers
+
+	for index := 0; index < len(tiebreakerA); index++ {
+		if tiebreakerA[index] != tiebreakerB[index] {
+			if tiebreakerA[index] > tiebreakerB[index] {
+				return handValueA, false
+			}
+			return handValueB, false
+		}
+	}
+	return handValueA, true
+}
+
+func FindWinningHandValue(handValueA HandValue, handValueB HandValue) (
+	HandValue, bool) {
+	if handValueA.Category != handValueB.Category {
+		return higherCategory(handValueA, handValueB), false
+	}
+
+	return compareHandValueTiebreakers(handValueA, handValueB)
+}
+
 func (category HandRank) String() string {
 	switch category {
 	case HighCard:
@@ -76,7 +109,7 @@ func EvaluateBestFiveCardHand(cards [5]Card) HandValue {
 	rankCounts := findRankCounts(cards)
 	handValue.Tiebreakers = findHighCards(rankCounts)
 	isStraight, isWheel := checkIfStraight(rankCounts)
-	//Special Wheel Case Fix
+	// Check if Straight is a Wheel Straight --> A, 2, 3, 4, 5
 	if isWheel {
 		specialWheelStraightTieBreakerRearrangement(&handValue.Tiebreakers)
 	}

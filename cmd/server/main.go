@@ -92,4 +92,13 @@ func main() {
 	fmt.Println("Tiebreakers: ", handValue2.Tiebreakers)
 	fmt.Println()
 
+	winner, isTied := poker.FindWinningHandValue(handValue2, handValue1)
+	if !isTied {
+		if winner == handValue1 {
+			fmt.Println("Winner: handValue1")
+		} else {
+			fmt.Println("Winner: handValue2")
+		}
+	}
+
 }
