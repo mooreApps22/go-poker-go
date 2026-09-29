@@ -17,6 +17,11 @@ type Hand struct {
 	communityCards      [5]Card
 	communityCardsDealt int
 	phase               HandPhase
+	winners             []*Player
+}
+
+func (hand Hand) GetWinner() []*Player {
+	return hand.winners
 }
 
 func (hand Hand) GetCommunityCards() [5]Card {

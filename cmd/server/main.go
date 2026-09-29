@@ -67,4 +67,7 @@ func main() {
 	fmt.Println("Debra's Best Hand: ", player4.BestHandValue.Category.String())
 	fmt.Println("Tiebreakers: ", player4.BestHandValue.Tiebreakers)
 	fmt.Println()
+
+	hand.PickWinningHand()
+	fmt.Println("Winner: ", hand.GetWinner())
 }
