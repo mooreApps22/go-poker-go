@@ -7,7 +7,8 @@ import (
 )
 
 func main() {
-	fmt.Println("Poker server starting...\n")
+	fmt.Println("Poker server starting...")
+	fmt.Println()
 
 	player1 := poker.NewPlayer(1, "Adam", 1_000_000)
 	player2 := poker.NewPlayer(2, "Bill", 1_000_000)
@@ -73,23 +74,17 @@ func main() {
 		//Test
 		hand.EvaluateEachPlayersBestHand()
 
-		fmt.Println("Adam's Best Hand: ", player1.BestHandValue.Category.String())
-		fmt.Println("Tiebreakers: ", player1.BestHandValue.Tiebreakers)
-		fmt.Println()
+		for offset := 0; offset < len(hand.GetPlayers()); offset++ {
+			playerIndex := (hand.GetSmallBlindIndex() + offset) % len(hand.GetPlayers())
+			player := hand.GetPlayers()[playerIndex]
 
-		fmt.Println("Bill's Best Hand: ", player2.BestHandValue.Category.String())
-		fmt.Println("Tiebreakers: ", player2.BestHandValue.Tiebreakers)
-		fmt.Println()
-
-		fmt.Println("Cathy's Best Hand: ", player3.BestHandValue.Category.String())
-		fmt.Println("Tiebreakers: ", player3.BestHandValue.Tiebreakers)
-		fmt.Println()
-
-		fmt.Println("Debra's Best Hand: ", player4.BestHandValue.Category.String())
-		fmt.Println("Tiebreakers: ", player4.BestHandValue.Tiebreakers)
-		fmt.Println()
+			fmt.Printf("%v's Best Hand: %v\n", player.Name, player.BestHandValue.Category.String())
+			fmt.Println("Tiebreakers: ", player.BestHandValue.Tiebreakers)
+			fmt.Println()
+		}
 
 		hand.PickWinningHand()
 		fmt.Println("Winner: ", hand.GetWinner())
+		game.RotateDealer()
 	}
 }
