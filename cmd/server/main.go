@@ -50,10 +50,7 @@ func main() {
 	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
 
 	//Test
-	player1.BestHandValue = poker.FindBestHandValue(hand.GetCommunityCards(), player1.HoleCards)
-	player2.BestHandValue = poker.FindBestHandValue(hand.GetCommunityCards(), player2.HoleCards)
-	player3.BestHandValue = poker.FindBestHandValue(hand.GetCommunityCards(), player3.HoleCards)
-	player4.BestHandValue = poker.FindBestHandValue(hand.GetCommunityCards(), player4.HoleCards)
+	hand.EvaluateEachPlayersBestHand()
 
 	fmt.Println("Adam's Best Hand: ", player1.BestHandValue.Category.String())
 	fmt.Println("Tiebreakers: ", player1.BestHandValue.Tiebreakers)
