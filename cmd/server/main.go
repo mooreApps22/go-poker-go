@@ -52,24 +52,24 @@ func main() {
 
 		for _, player := range players {
 			fmt.Println(player)
-			fmt.Println(poker.PrettyCardsString(player.HoleCards[:]))
+			fmt.Println(poker.FormatCards(player.HoleCards[:]))
 			fmt.Println()
 		}
 
 		hand.DealFlopCards()
 
-		//	fmt.Println("Community Flop Cards:")
-		//	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
+		fmt.Println("Community Flop Cards:")
+		fmt.Println(poker.FormatCards(hand.CommunityCards()))
 
 		hand.DealTurnCard()
 
-		//	fmt.Println("Community Turn Card:")
-		//	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
+		fmt.Println("Community Turn Card:")
+		fmt.Println(poker.FormatCards(hand.CommunityCards()))
 
 		hand.DealRiverCard()
 
 		fmt.Println("Community River Card:")
-		fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
+		fmt.Println(poker.FormatCards(hand.CommunityCards()))
 
 		//Test
 		hand.EvaluateEachPlayersBestHand()
@@ -83,7 +83,7 @@ func main() {
 			fmt.Println()
 		}
 
-		hand.PickWinningHand()
+		hand.PickWinners()
 		fmt.Println("Winner: ", hand.GetWinner())
 		game.RotateDealer()
 	}

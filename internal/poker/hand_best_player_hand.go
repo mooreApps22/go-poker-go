@@ -26,7 +26,7 @@ func comparePlayersHandValues(player1 *Player, player2 *Player) (*Player, bool) 
 	return player2, false
 }
 
-func (hand *Hand) PickWinningHand() {
+func (hand *Hand) PickWinners() {
 	hand.winners = []*Player{hand.players[0]}
 	for index := 1; index < len(hand.players); index++ {
 		winningPlayer, isTied := comparePlayersHandValues(

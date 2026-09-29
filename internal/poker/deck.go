@@ -37,7 +37,7 @@ func (deck Deck) Print() {
 		if end > len(deck.cards) {
 			end = len(deck.cards)
 		}
-		fmt.Println(PrettyCardsString((deck.cards[start:end])))
+		fmt.Println(FormatCards((deck.cards[start:end])))
 	}
 }
 

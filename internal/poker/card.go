@@ -115,7 +115,7 @@ func (card Card) PrettyCardString() string {
 }
 
 // Packet Function because no receiver
-func PrettyCardsString(cards []Card) string {
+func FormatCards(cards []Card) string {
 	result := ""
 	for row := 0; row < 4; row++ {
 		for _, card := range cards {

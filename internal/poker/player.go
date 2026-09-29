@@ -8,6 +8,7 @@ type Player struct {
 	Chips         int64
 	HoleCards     [2]Card
 	BestHandValue HandValue
+	BestCards     [5]Card
 }
 
 func NewPlayer(id int, name string, chips int64) Player {
