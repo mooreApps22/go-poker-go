@@ -50,24 +50,24 @@ func main() {
 	fmt.Println(poker.PrettyCardsString(hand.CommunityCards()))
 
 	//Test
-	player1BestHandValue := poker.FindBestHandValue(hand.GetCommunityCards(), player1.HoleCards)
-	player2BestHandValue := poker.FindBestHandValue(hand.GetCommunityCards(), player2.HoleCards)
-	player3BestHandValue := poker.FindBestHandValue(hand.GetCommunityCards(), player3.HoleCards)
-	player4BestHandValue := poker.FindBestHandValue(hand.GetCommunityCards(), player4.HoleCards)
+	player1.BestHandValue = poker.FindBestHandValue(hand.GetCommunityCards(), player1.HoleCards)
+	player2.BestHandValue = poker.FindBestHandValue(hand.GetCommunityCards(), player2.HoleCards)
+	player3.BestHandValue = poker.FindBestHandValue(hand.GetCommunityCards(), player3.HoleCards)
+	player4.BestHandValue = poker.FindBestHandValue(hand.GetCommunityCards(), player4.HoleCards)
 
-	fmt.Println("Adam's Best Hand: ")
-	fmt.Println(player1BestHandValue.Category.String())
-	fmt.Println("Tiebreakers: ", player1BestHandValue.Tiebreakers)
+	fmt.Println("Adam's Best Hand: ", player1.BestHandValue.Category.String())
+	fmt.Println("Tiebreakers: ", player1.BestHandValue.Tiebreakers)
+	fmt.Println()
 
-	fmt.Println("Bill's Best Hand: ")
-	fmt.Println(player2BestHandValue.Category.String())
-	fmt.Println("Tiebreakers: ", player2BestHandValue.Tiebreakers)
+	fmt.Println("Bill's Best Hand: ", player2.BestHandValue.Category.String())
+	fmt.Println("Tiebreakers: ", player2.BestHandValue.Tiebreakers)
+	fmt.Println()
 
-	fmt.Println("Cathy's Best Hand: ")
-	fmt.Println(player3BestHandValue.Category.String())
-	fmt.Println("Tiebreakers: ", player3BestHandValue.Tiebreakers)
+	fmt.Println("Cathy's Best Hand: ", player3.BestHandValue.Category.String())
+	fmt.Println("Tiebreakers: ", player3.BestHandValue.Tiebreakers)
+	fmt.Println()
 
-	fmt.Println("Debra's Best Hand: ")
-	fmt.Println(player4BestHandValue.Category.String())
-	fmt.Println("Tiebreakers: ", player4BestHandValue.Tiebreakers)
+	fmt.Println("Debra's Best Hand: ", player4.BestHandValue.Category.String())
+	fmt.Println("Tiebreakers: ", player4.BestHandValue.Tiebreakers)
+	fmt.Println()
 }

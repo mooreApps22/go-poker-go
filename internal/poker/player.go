@@ -3,10 +3,11 @@ package poker
 import "fmt"
 
 type Player struct {
-	ID        int
-	Name      string
-	Chips     int64
-	HoleCards [2]Card
+	ID            int
+	Name          string
+	Chips         int64
+	HoleCards     [2]Card
+	BestHandValue HandValue
 }
 
 func NewPlayer(id int, name string, chips int64) Player {
