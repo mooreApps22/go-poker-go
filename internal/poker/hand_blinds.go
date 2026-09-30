@@ -1,0 +1,16 @@
+package poker
+
+func (hand *Hand) PostBlinds() {
+	hand.pot.BuildBet(2_000, hand.players[hand.smallBlindIndex])
+	hand.pot.BuildBet(4_000, hand.players[hand.bigBlindIndex])
+}
+
+func (hand *Hand) AwardPot() {
+	winnings := hand.pot.Value / int64(len(hand.winners))
+
+	for _, winner := range hand.winners {
+		winner.CollectWinnings(winnings)
+	}
+
+	hand.pot.Value = 0
+}

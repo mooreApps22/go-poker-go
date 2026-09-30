@@ -26,3 +26,12 @@ func (player Player) String() string {
 func (player *Player) GetBestCards() []Card {
 	return player.BestCards[:]
 }
+
+func (player *Player) PlaceBet(betAmount int64) int64 {
+	player.Chips -= betAmount
+	return betAmount
+}
+
+func (player *Player) CollectWinnings(winnings int64) {
+	player.Chips += winnings
+}

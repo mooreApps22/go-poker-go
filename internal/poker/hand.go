@@ -11,6 +11,7 @@ type Hand struct {
 	smallBlindIndex     int
 	bigBlindIndex       int
 	utgIndex            int // utg -> Under The Gun
+	pot                 Pot
 }
 
 type HandPhase uint8
@@ -51,5 +52,6 @@ func NewHand(players []*Player) Hand {
 		deck:    deck,
 		players: players,
 		phase:   SetUp,
+		pot:     NewPot(),
 	}
 }

@@ -61,6 +61,10 @@ func main() {
 		fmt.Println("Community Flop Cards:")
 		fmt.Println(poker.FormatCards(hand.CommunityCards()))
 
+		fmt.Println("Blind bets posted:")
+
+		hand.PostBlinds()
+
 		hand.DealTurnCard()
 
 		fmt.Println("Community Turn Card:")
@@ -84,6 +88,7 @@ func main() {
 		}
 
 		hand.PickWinners()
+		hand.AwardPot()
 		fmt.Println("Winner: ", hand.GetWinner())
 		for _, player := range hand.GetWinner() {
 			fmt.Println(poker.FormatCards(player.GetBestCards()))
