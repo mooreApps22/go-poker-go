@@ -10,10 +10,10 @@ func main() {
 	fmt.Println("Poker server starting...")
 	fmt.Println()
 
-	player1 := poker.NewPlayer(1, "Adam", 1_000_000)
-	player2 := poker.NewPlayer(2, "Bill", 1_000_000)
-	player3 := poker.NewPlayer(3, "Cathy", 1_000_000)
-	player4 := poker.NewPlayer(4, "Debra", 1_000_000)
+	player1 := poker.NewPlayer(1, "Adam")
+	player2 := poker.NewPlayer(2, "Bill")
+	player3 := poker.NewPlayer(3, "Cathy")
+	player4 := poker.NewPlayer(4, "Debra")
 
 	players := []*poker.Player{
 		&player1,

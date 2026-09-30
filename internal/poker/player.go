@@ -11,11 +11,11 @@ type Player struct {
 	BestCards     [5]Card
 }
 
-func NewPlayer(id int, name string, chips int64) Player {
+func NewPlayer(id int, name string) Player {
 	return Player{
 		ID:    id,
 		Name:  name,
-		Chips: chips,
+		Chips: 1_000_000,
 	}
 }
 
