@@ -22,3 +22,7 @@ func NewPlayer(id int, name string) Player {
 func (player Player) String() string {
 	return fmt.Sprintf("%v[%v] — Chips: $%v", player.Name, player.ID, player.Chips)
 }
+
+func (player *Player) GetBestCards() []Card {
+	return player.BestCards[:]
+}

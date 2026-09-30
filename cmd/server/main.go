@@ -85,6 +85,9 @@ func main() {
 
 		hand.PickWinners()
 		fmt.Println("Winner: ", hand.GetWinner())
+		for _, player := range hand.GetWinner() {
+			fmt.Println(poker.FormatCards(player.GetBestCards()))
+		}
 		game.RotateDealer()
 	}
 }

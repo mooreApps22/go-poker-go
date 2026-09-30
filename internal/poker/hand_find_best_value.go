@@ -1,17 +1,29 @@
 package poker
 
-func findHighestHandValue(possibleHands [21]HandValue) HandValue {
-	maxHandValue := possibleHands[0]
+func findHighestHandValue(possibleHandValues [21]HandValue, possibleHands [21][5]Card) (
+	HandValue, [5]Card) {
+	maxHandValue := possibleHandValues[0]
+	maxHandIndex := 0
 
-	for index := 1; index < len(possibleHands); index++ {
-		maxHandValue, _ = FindWinningHandValue(maxHandValue, possibleHands[index])
+	for index := 1; index < len(possibleHandValues); index++ {
+		winningHandValue, isTied := FindWinningHandValue(
+			maxHandValue,
+			possibleHandValues[index],
+		)
+
+		if !isTied && winningHandValue == possibleHandValues[index] {
+			maxHandValue = winningHandValue
+			maxHandIndex = index
+		}
 	}
 
-	return maxHandValue
+	return maxHandValue, possibleHands[maxHandIndex]
 }
 
-func FindBestHandValue(communityCards [5]Card, holeCards [2]Card) HandValue {
-	var possibleHands [21]HandValue
+func FindBestHandValue(communityCards [5]Card, holeCards [2]Card) (
+	HandValue, [5]Card) {
+	var possibleHandValues [21]HandValue
+	var possibleHands [21][5]Card
 	possibleHandsIndex := 0
 
 	var availableCards [7]Card
@@ -34,10 +46,11 @@ func FindBestHandValue(communityCards [5]Card, holeCards [2]Card) HandValue {
 				}
 			}
 
-			possibleHands[possibleHandsIndex] = EvaluateBestFiveCardHand(possibleHand)
+			possibleHands[possibleHandsIndex] = possibleHand
+			possibleHandValues[possibleHandsIndex] = EvaluateBestFiveCardHand(possibleHand)
 			possibleHandsIndex++
 		}
 	}
 
-	return findHighestHandValue(possibleHands)
+	return findHighestHandValue(possibleHandValues, possibleHands)
 }

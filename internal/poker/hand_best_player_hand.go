@@ -2,7 +2,7 @@ package poker
 
 func (hand Hand) EvaluateEachPlayersBestHand() {
 	for _, player := range hand.players {
-		player.BestHandValue = FindBestHandValue(
+		player.BestHandValue, player.BestCards = FindBestHandValue(
 			hand.GetCommunityCards(),
 			player.HoleCards,
 		)
