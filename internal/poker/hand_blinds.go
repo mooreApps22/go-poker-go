@@ -17,3 +17,7 @@ func (hand *Hand) AwardPot() {
 		player.ResetCurrentBet()
 	}
 }
+
+func (hand Hand) GetPot() Pot {
+	return hand.pot
+}

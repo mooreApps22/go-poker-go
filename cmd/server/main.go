@@ -45,12 +45,11 @@ func main() {
 		hand := game.GetHand()
 
 		fmt.Println("Blind bets posted:")
-
 		hand.PostBlinds()
-
 		for _, player := range hand.GetPlayers() {
 			fmt.Printf("%v's Current Bet: %v\n", player.GetName(), player.GetCurrentBet())
 		}
+		fmt.Printf("Current Pot: %v\n", hand.GetPot().GetValue())
 
 		hand.DealFlopCards()
 

@@ -13,3 +13,7 @@ func NewPot() Pot {
 func (pot *Pot) BuildBet(betValue int64, player *Player) {
 	pot.Value += player.PlaceBet(betValue)
 }
+
+func (pot Pot) GetValue() int64 {
+	return pot.Value
+}
