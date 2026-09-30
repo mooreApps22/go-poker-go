@@ -13,4 +13,7 @@ func (hand *Hand) AwardPot() {
 	}
 
 	hand.pot.Value = 0
+	for _, player := range hand.players {
+		player.ResetCurrentBet()
+	}
 }

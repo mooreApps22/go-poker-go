@@ -44,6 +44,16 @@ func main() {
 		game.NewHand()
 		hand := game.GetHand()
 
+		fmt.Println("Blind bets posted:")
+
+		hand.PostBlinds()
+
+		for _, player := range hand.GetPlayers() {
+			fmt.Printf("%v's Current Bet: %v\n", player.GetName(), player.GetCurrentBet())
+		}
+
+		hand.DealFlopCards()
+
 		err := hand.DealHoleCards()
 		if err != nil {
 			fmt.Println("Error:", err)
@@ -56,14 +66,8 @@ func main() {
 			fmt.Println()
 		}
 
-		hand.DealFlopCards()
-
 		fmt.Println("Community Flop Cards:")
 		fmt.Println(poker.FormatCards(hand.CommunityCards()))
-
-		fmt.Println("Blind bets posted:")
-
-		hand.PostBlinds()
 
 		hand.DealTurnCard()
 

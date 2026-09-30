@@ -9,6 +9,7 @@ type Player struct {
 	HoleCards     [2]Card
 	BestHandValue HandValue
 	BestCards     [5]Card
+	CurrentBet    int64
 }
 
 func NewPlayer(id int, name string) Player {
@@ -29,9 +30,22 @@ func (player *Player) GetBestCards() []Card {
 
 func (player *Player) PlaceBet(betAmount int64) int64 {
 	player.Chips -= betAmount
+	player.CurrentBet += betAmount
 	return betAmount
 }
 
 func (player *Player) CollectWinnings(winnings int64) {
 	player.Chips += winnings
+}
+
+func (player *Player) ResetCurrentBet() {
+	player.CurrentBet = 0
+}
+
+func (player *Player) GetCurrentBet() int64 {
+	return player.CurrentBet
+}
+
+func (player Player) GetName() string {
+	return player.Name
 }
