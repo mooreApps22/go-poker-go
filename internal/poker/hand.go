@@ -15,6 +15,7 @@ type Hand struct {
 	currentCall         int64
 	currentPlayerIndex  int
 	voluntaryBets       bool
+	minimumBet          int64
 }
 
 const BigBlindBet = 4_000
@@ -61,5 +62,6 @@ func NewHand(players []*Player) Hand {
 		pot:           NewPot(),
 		currentCall:   BigBlindBet,
 		voluntaryBets: false,
+		minimumBet:    BigBlindBet,
 	}
 }

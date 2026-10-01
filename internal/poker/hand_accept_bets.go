@@ -105,23 +105,22 @@ func (hand *Hand) handPlayerInput(player *Player) {
 			player.hasActed = true
 			return
 		case "C", "CALL":
-			player.hasActed = true
-			hand.call(player)
-			return
+			if hand.call(player) {
+				return
+			}
 		case "B", "BET":
-			player.hasActed = true
-			hand.bet(player)
-			return
+			if hand.bet(player) {
+				return
+			}
 		case "R", "RAISE":
-			player.hasActed = true
-			// hand.raise(player)
-			return
+			if hand.raise(player) {
+				return
+			}
 		case "F", "FOLD":
 			player.hasActed = true
 			// hand.fold(player)
 			return
 		case "A", "ALL", "ALLIN", "ALL IN":
-			player.hasActed = true
 			// hand.allIn(player)
 			return
 		default:
@@ -131,32 +130,69 @@ func (hand *Hand) handPlayerInput(player *Player) {
 	}
 }
 
-func (hand *Hand) call(player *Player) {
+func (hand *Hand) call(player *Player) bool {
 	amountToCall := hand.currentCall - player.currentBet
 
 	hand.pot.BuildBet(amountToCall, player)
+	player.hasActed = true
+	return true
 }
 
-func (hand *Hand) bet(player *Player) {
+func (hand *Hand) bet(player *Player) bool {
 	fmt.Print("Enter the amount of your bet: ")
 
 	var betAmount int64
 	_, err := fmt.Scan(&betAmount)
 	if err != nil {
 		fmt.Println("Invalid bet amount")
-		return
+		return false
 	}
 
 	if hand.currentCall != 0 {
 		fmt.Println("There is already a bet. You must call or raise.")
-		return
+		return false
 	}
 
 	if betAmount <= 0 {
 		fmt.Println("Your bet must be greater than zero.")
-		return
+		return false
+	}
+
+	if betAmount < hand.minimumBet {
+		fmt.Printf("Your bet must be greater than %v\n.", hand.minimumBet)
+		return false
 	}
 
 	hand.pot.BuildBet(betAmount, player)
 	hand.currentCall = betAmount
+	player.hasActed = true
+	return true
+}
+
+func (hand *Hand) raise(player *Player) bool {
+	fmt.Print("Enter the amount of your raise: ")
+
+	var raiseAmount int64
+	_, err := fmt.Scan(&raiseAmount)
+	if err != nil {
+		fmt.Println("Invalid bet amount")
+		return false
+	}
+
+	if raiseAmount < hand.currentCall {
+		fmt.Println("Your raise must be greater than the current call.")
+		return false
+	}
+
+	if raiseAmount-hand.currentCall < hand.minimumBet {
+		fmt.Printf("Your raise must be greater than %v\n.", hand.minimumBet)
+		return false
+	}
+
+	amountToRaise := raiseAmount - player.currentBet
+
+	hand.pot.BuildBet(amountToRaise, player)
+	hand.currentCall = raiseAmount
+	player.hasActed = true
+	return true
 }
