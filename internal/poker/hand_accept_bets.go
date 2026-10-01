@@ -78,20 +78,16 @@ func (hand *Hand) bettingRoundComplete() bool {
 
 func (hand *Hand) displayPlayerActions(player *Player) {
 	fmt.Printf("%v's Turn:\n", player.name)
-	fmt.Println("player.currentBet: ", player.currentBet)
-	fmt.Println("hand.currentCall: ", hand.currentCall)
-	fmt.Println("hand.voluntaryBets: ", hand.voluntaryBets)
-	if player.currentBet < hand.currentCall && !hand.voluntaryBets {
-		amountToCall := hand.currentCall - player.currentBet
-		fmt.Println("amountToCall: ", amountToCall)
-
-		fmt.Println("[C] Call $", amountToCall)
-	} else if player.currentBet < hand.currentCall && hand.voluntaryBets {
-		fmt.Println("[B] Bet")
-	} else if player.currentBet == hand.currentCall {
+	if hand.currentCall == 0 {
 		fmt.Println("[K] Check")
 		fmt.Println("[B] Bet")
+	} else if player.currentBet < hand.currentCall {
+		amountToCall := hand.currentCall - player.currentBet
+		fmt.Println("[C] Call $", amountToCall)
+	} else {
+		fmt.Println("[K] Check")
 	}
+
 	if hand.currentCall > 0 {
 		fmt.Println("[R] Raise")
 	}
