@@ -123,9 +123,9 @@ func (hand *Hand) handlePlayerInput(player *Player) {
 				return
 			}
 		case "F", "FOLD":
-			player.hasActed = true
-			// hand.fold(player)
-			return
+			if hand.fold(player) {
+				return
+			}
 		case "A", "ALL", "ALLIN", "ALL IN":
 			// hand.allIn(player)
 			return
@@ -217,4 +217,10 @@ func (hand *Hand) raise(player *Player) bool {
 		player.hasActed = true
 		return true
 	}
+}
+
+func (hand *Hand) fold(player *Player) bool {
+	player.hasFolded = true
+	player.hasActed = true
+	return true
 }
