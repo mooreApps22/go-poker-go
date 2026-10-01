@@ -51,8 +51,6 @@ func main() {
 		}
 		fmt.Printf("Current Pot: %v\n", hand.GetPot().GetValue())
 
-		hand.DealFlopCards()
-
 		err := hand.DealHoleCards()
 		if err != nil {
 			fmt.Println("Error:", err)
@@ -64,6 +62,8 @@ func main() {
 			fmt.Println(poker.FormatCards(player.GetHoleCards()))
 			fmt.Println()
 		}
+
+		hand.DealFlopCards()
 
 		fmt.Println("Community Flop Cards:")
 		fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
