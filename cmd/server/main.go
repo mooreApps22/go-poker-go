@@ -55,11 +55,13 @@ func main() {
 			fmt.Println("Error:", err)
 			return
 		}
-		for _, player := range players {
-			fmt.Println(player)
-			fmt.Println(poker.FormatCards(player.GetHoleCards()))
-			fmt.Println()
-		}
+		/*
+			for _, player := range players {
+				fmt.Println(player)
+				fmt.Println(poker.FormatCards(player.GetHoleCards()))
+				fmt.Println()
+			}
+		*/
 		hand.AcceptBets()
 
 		//BETS
@@ -94,7 +96,7 @@ func main() {
 
 		hand.PickWinners()
 		hand.AwardPot()
-		fmt.Println("Winner: ", hand.GetWinner())
+		//		fmt.Println("Winner: ", hand.GetWinner())
 		for _, player := range hand.GetWinner() {
 			fmt.Println(poker.FormatCards(player.GetBestCards()))
 		}
