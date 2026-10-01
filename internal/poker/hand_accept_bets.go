@@ -77,6 +77,7 @@ func (hand *Hand) bettingRoundComplete() bool {
 }
 
 func (hand *Hand) displayPlayerActions(player *Player) {
+	fmt.Println("Current Pot: ", hand.pot.GetValue())
 	fmt.Printf("%v's Turn:\n", player.name)
 	if hand.currentCall == 0 {
 		fmt.Println("[K] Check")

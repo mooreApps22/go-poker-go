@@ -49,7 +49,6 @@ func main() {
 		for _, player := range hand.GetPlayers() {
 			fmt.Printf("%v's Current Bet: %v\n", player.GetName(), player.GetCurrentBet())
 		}
-		fmt.Printf("Current Pot: %v\n", hand.GetPot().GetValue())
 
 		err := hand.DealHoleCards()
 		if err != nil {
@@ -70,15 +69,20 @@ func main() {
 		fmt.Println("Community Flop Cards:")
 		fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
 
+		hand.AcceptBets()
 		hand.DealTurnCard()
 
 		fmt.Println("Community Turn Card:")
 		fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
 
+		hand.AcceptBets()
 		hand.DealRiverCard()
 
 		fmt.Println("Community River Card:")
 		fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
+
+		fmt.Println("SHOWDOWN!!!!: ")
+		hand.AcceptBets()
 
 		//Test
 		hand.EvaluateEachPlayersBestHand()
