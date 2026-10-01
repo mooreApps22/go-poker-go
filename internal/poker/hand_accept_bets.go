@@ -133,6 +133,11 @@ func (hand *Hand) handPlayerInput(player *Player) {
 func (hand *Hand) call(player *Player) bool {
 	amountToCall := hand.currentCall - player.currentBet
 
+	if amountToCall <= 0 {
+		fmt.Println("There is nothing to call.")
+		return false
+	}
+
 	hand.pot.BuildBet(amountToCall, player)
 	player.hasActed = true
 	return true
