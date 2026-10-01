@@ -12,10 +12,6 @@ func (hand Hand) GetCommunityCards() [5]Card {
 	return hand.communityCards
 }
 
-func (hand Hand) GetCommunityCardsDealt() int {
-	return hand.communityCardsDealt
-}
-
 func (hand Hand) GetWinner() []*Player {
 	return hand.winners
 }

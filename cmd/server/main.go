@@ -61,22 +61,22 @@ func main() {
 
 		for _, player := range players {
 			fmt.Println(player)
-			fmt.Println(poker.FormatCards(player.HoleCards[:]))
+			fmt.Println(poker.FormatCards(player.GetHoleCards()))
 			fmt.Println()
 		}
 
 		fmt.Println("Community Flop Cards:")
-		fmt.Println(poker.FormatCards(hand.CommunityCards()))
+		fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
 
 		hand.DealTurnCard()
 
 		fmt.Println("Community Turn Card:")
-		fmt.Println(poker.FormatCards(hand.CommunityCards()))
+		fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
 
 		hand.DealRiverCard()
 
 		fmt.Println("Community River Card:")
-		fmt.Println(poker.FormatCards(hand.CommunityCards()))
+		fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
 
 		//Test
 		hand.EvaluateEachPlayersBestHand()
@@ -85,8 +85,8 @@ func main() {
 			playerIndex := (hand.GetSmallBlindIndex() + offset) % len(hand.GetPlayers())
 			player := hand.GetPlayers()[playerIndex]
 
-			fmt.Printf("%v's Best Hand: %v\n", player.Name, player.BestHandValue.Category.String())
-			fmt.Println("Tiebreakers: ", player.BestHandValue.Tiebreakers)
+			fmt.Printf("%v's Best Hand: %v\n", player.GetName(), player.GetBestHandValue().Category.String())
+			fmt.Println("Tiebreakers: ", player.GetBestHandValue().Tiebreakers)
 			fmt.Println()
 		}
 

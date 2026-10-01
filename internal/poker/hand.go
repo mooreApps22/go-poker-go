@@ -12,6 +12,7 @@ type Hand struct {
 	bigBlindIndex       int
 	utgIndex            int // utg -> Under The Gun
 	pot                 Pot
+	currentCall         int64
 }
 
 type HandPhase uint8

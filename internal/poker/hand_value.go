@@ -24,7 +24,7 @@ func compareHandValueTiebreakers(handValueA HandValue, handValueB HandValue) (
 	return handValueA, true
 }
 
-func FindWinningHandValue(handValueA HandValue, handValueB HandValue) (
+func findWinningHandValue(handValueA HandValue, handValueB HandValue) (
 	HandValue, bool) {
 	if handValueA.Category != handValueB.Category {
 		return higherCategory(handValueA, handValueB), false

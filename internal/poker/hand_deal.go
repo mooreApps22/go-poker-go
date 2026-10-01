@@ -9,7 +9,7 @@ func (hand *Hand) DealHoleCards() error {
 				return err
 			}
 
-			hand.players[playerIndex].HoleCards[holeCardIndex] = card
+			hand.players[playerIndex].holeCards[holeCardIndex] = card
 		}
 	}
 	hand.phase = PreFlop
@@ -34,7 +34,7 @@ func (hand *Hand) DealFlopCards() error {
 	return nil
 }
 
-func (hand Hand) CommunityCards() []Card {
+func (hand Hand) GetCommunityCardsDealt() []Card {
 	return hand.communityCards[:hand.communityCardsDealt]
 }
 

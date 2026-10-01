@@ -6,13 +6,13 @@ func (hand *Hand) PostBlinds() {
 }
 
 func (hand *Hand) AwardPot() {
-	winnings := hand.pot.Value / int64(len(hand.winners))
+	winnings := hand.pot.value / int64(len(hand.winners))
 
 	for _, winner := range hand.winners {
 		winner.CollectWinnings(winnings)
 	}
 
-	hand.pot.Value = 0
+	hand.pot.value = 0
 	for _, player := range hand.players {
 		player.ResetCurrentBet()
 	}

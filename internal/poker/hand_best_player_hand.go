@@ -2,24 +2,24 @@ package poker
 
 func (hand Hand) EvaluateEachPlayersBestHand() {
 	for _, player := range hand.players {
-		player.BestHandValue, player.BestCards = FindBestHandValue(
+		player.bestHandValue, player.bestCards = findBestHandValue(
 			hand.GetCommunityCards(),
-			player.HoleCards,
+			player.holeCards,
 		)
 	}
 }
 
 func comparePlayersHandValues(player1 *Player, player2 *Player) (*Player, bool) {
-	winningHandValue, isTied := FindWinningHandValue(
-		player1.BestHandValue,
-		player2.BestHandValue,
+	winningHandValue, isTied := findWinningHandValue(
+		player1.bestHandValue,
+		player2.bestHandValue,
 	)
 
 	if isTied {
 		return player1, true
 	}
 
-	if winningHandValue == player1.BestHandValue {
+	if winningHandValue == player1.bestHandValue {
 		return player1, false
 	}
 

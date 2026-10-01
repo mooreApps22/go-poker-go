@@ -6,7 +6,7 @@ func findHighestHandValue(possibleHandValues [21]HandValue, possibleHands [21][5
 	maxHandIndex := 0
 
 	for index := 1; index < len(possibleHandValues); index++ {
-		winningHandValue, isTied := FindWinningHandValue(
+		winningHandValue, isTied := findWinningHandValue(
 			maxHandValue,
 			possibleHandValues[index],
 		)
@@ -20,7 +20,7 @@ func findHighestHandValue(possibleHandValues [21]HandValue, possibleHands [21][5
 	return maxHandValue, possibleHands[maxHandIndex]
 }
 
-func FindBestHandValue(communityCards [5]Card, holeCards [2]Card) (
+func findBestHandValue(communityCards [5]Card, holeCards [2]Card) (
 	HandValue, [5]Card) {
 	var possibleHandValues [21]HandValue
 	var possibleHands [21][5]Card
