@@ -18,6 +18,7 @@ func (game *Game) NewHand() {
 	game.hand.smallBlindIndex = (game.dealerIndex + 2) % len(game.players)
 	game.hand.bigBlindIndex = (game.dealerIndex + 3) % len(game.players)
 	game.hand.utgIndex = (game.dealerIndex + 4) % len(game.players)
+	game.hand.currentPlayerIndex = game.hand.utgIndex
 }
 
 func (game *Game) GetHand() *Hand {

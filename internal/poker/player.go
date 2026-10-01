@@ -10,13 +10,19 @@ type Player struct {
 	bestHandValue HandValue
 	bestCards     [5]Card
 	currentBet    int64
+	hasFolded     bool
+	hasChecked    bool
+	hasActed      bool
 }
 
 func NewPlayer(id int, name string) Player {
 	return Player{
-		id:    id,
-		name:  name,
-		chips: 1_000_000,
+		id:         id,
+		name:       name,
+		chips:      1_000_000,
+		hasFolded:  false,
+		hasChecked: false,
+		hasActed:   false,
 	}
 }
 

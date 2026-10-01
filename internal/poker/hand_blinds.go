@@ -1,8 +1,8 @@
 package poker
 
 func (hand *Hand) PostBlinds() {
-	hand.pot.BuildBet(2_000, hand.players[hand.smallBlindIndex])
-	hand.pot.BuildBet(4_000, hand.players[hand.bigBlindIndex])
+	hand.pot.BuildBet(SmallBlindBet, hand.players[hand.smallBlindIndex])
+	hand.pot.BuildBet(BigBlindBet, hand.players[hand.bigBlindIndex])
 }
 
 func (hand *Hand) AwardPot() {

@@ -63,6 +63,8 @@ func main() {
 			fmt.Println()
 		}
 
+		//BETS
+		hand.AcceptBets()
 		hand.DealFlopCards()
 
 		fmt.Println("Community Flop Cards:")
