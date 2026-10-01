@@ -45,6 +45,7 @@ func (player *Player) GetBestCards() []Card {
 func (player *Player) PlaceBet(betAmount int64) int64 {
 	player.chips -= betAmount
 	player.currentBet += betAmount
+
 	return betAmount
 }
 

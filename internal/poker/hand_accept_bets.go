@@ -83,6 +83,7 @@ func (hand *Hand) displayPlayerActions(player *Player) {
 		fmt.Println("[B] Bet")
 	} else if player.currentBet == hand.currentCall {
 		fmt.Println("[K] Check")
+		fmt.Println("[B] Bet")
 	}
 	fmt.Println("[R] Raise")
 	fmt.Println("[F] Fold")
@@ -109,7 +110,7 @@ func (hand *Hand) handPlayerInput(player *Player) {
 			return
 		case "B", "BET":
 			player.hasActed = true
-			// hand.bet(player)
+			hand.bet(player)
 			return
 		case "R", "RAISE":
 			player.hasActed = true
@@ -134,4 +135,28 @@ func (hand *Hand) call(player *Player) {
 	amountToCall := hand.currentCall - player.currentBet
 
 	hand.pot.BuildBet(amountToCall, player)
+}
+
+func (hand *Hand) bet(player *Player) {
+	fmt.Print("Enter the amount of your bet: ")
+
+	var betAmount int64
+	_, err := fmt.Scan(&betAmount)
+	if err != nil {
+		fmt.Println("Invalid bet amount")
+		return
+	}
+
+	if hand.currentCall != 0 {
+		fmt.Println("There is already a bet. You must call or raise.")
+		return
+	}
+
+	if betAmount <= 0 {
+		fmt.Println("Your bet must be greater than zero.")
+		return
+	}
+
+	hand.pot.BuildBet(betAmount, player)
+	hand.currentCall = betAmount
 }
