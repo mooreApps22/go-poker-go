@@ -33,10 +33,14 @@ hasChecked    bool
 */
 
 func (hand *Hand) AcceptBets() {
+	if hand.IsOver() {
+		return
+	}
 	for {
 		if hand.bettingRoundComplete() {
 			break
 		}
+
 		if hand.currentPlayerIndex >= len(hand.players) {
 			hand.currentPlayerIndex = 0
 		}
@@ -49,6 +53,10 @@ func (hand *Hand) AcceptBets() {
 		}
 
 		hand.handlePlayerInput(player)
+
+		if hand.IsOver() {
+			return
+		}
 
 		hand.currentPlayerIndex++
 	}
@@ -73,6 +81,10 @@ func (hand *Hand) bettingRoundComplete() bool {
 }
 
 func (hand *Hand) displayPlayerActions(player *Player) {
+	fmt.Println("Community Cards Dealt:")
+	fmt.Println(FormatCards(hand.GetCommunityCardsDealt()))
+	fmt.Printf("%v's Hole Cards:\n", player.name)
+	fmt.Println(FormatCards(player.GetHoleCards()))
 	fmt.Println("Current Pot: ", hand.pot.GetValue())
 	fmt.Printf("%v's Turn:\n", player.name)
 	if hand.currentCall == 0 {
@@ -222,5 +234,10 @@ func (hand *Hand) raise(player *Player) bool {
 func (hand *Hand) fold(player *Player) bool {
 	player.hasFolded = true
 	player.hasActed = true
+	hand.haveFoldedCount++
 	return true
+}
+
+func (hand *Hand) IsOver() bool {
+	return len(hand.players)-hand.haveFoldedCount == 1
 }
