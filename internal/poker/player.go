@@ -13,6 +13,7 @@ type Player struct {
 	hasFolded     bool
 	hasChecked    bool
 	hasActed      bool
+	hasAllIn      bool
 }
 
 func NewPlayer(id int, name string) Player {
@@ -23,6 +24,7 @@ func NewPlayer(id int, name string) Player {
 		hasFolded:  false,
 		hasChecked: false,
 		hasActed:   false,
+		hasAllIn:   false,
 	}
 }
 

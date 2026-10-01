@@ -55,34 +55,30 @@ func main() {
 			fmt.Println("Error:", err)
 			return
 		}
-
 		for _, player := range players {
 			fmt.Println(player)
 			fmt.Println(poker.FormatCards(player.GetHoleCards()))
 			fmt.Println()
 		}
+		hand.AcceptBets()
 
 		//BETS
-		hand.AcceptBets()
 		hand.DealFlopCards()
-
+		hand.AcceptBets()
 		fmt.Println("Community Flop Cards:")
 		fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
 
-		hand.AcceptBets()
 		hand.DealTurnCard()
-
+		hand.AcceptBets()
 		fmt.Println("Community Turn Card:")
 		fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
 
-		hand.AcceptBets()
 		hand.DealRiverCard()
-
+		hand.AcceptBets()
 		fmt.Println("Community River Card:")
 		fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
 
 		fmt.Println("SHOWDOWN!!!!: ")
-		hand.AcceptBets()
 
 		//Test
 		hand.EvaluateEachPlayersBestHand()

@@ -47,7 +47,7 @@ func (hand *Hand) AcceptBets() {
 
 		player := hand.players[hand.currentPlayerIndex]
 
-		if player.hasFolded {
+		if player.hasFolded || player.hasAllIn {
 			hand.currentPlayerIndex++
 			continue
 		}
@@ -73,10 +73,12 @@ func (hand *Hand) AcceptBets() {
 func (hand *Hand) bettingRoundComplete() bool {
 	for _, player := range hand.players {
 		if !player.hasFolded &&
+			!player.hasAllIn &&
 			(!player.hasActed || player.currentBet != hand.currentCall) {
 			return false
 		}
 	}
+
 	return true
 }
 
@@ -135,11 +137,10 @@ func (hand *Hand) handlePlayerInput(player *Player) {
 				return
 			}
 		case "F", "FOLD":
-			if hand.fold(player) {
-				return
-			}
+			hand.fold(player)
+			return
 		case "A", "ALL", "ALLIN", "ALL IN":
-			// hand.allIn(player)
+			hand.allIn(player)
 			return
 		default:
 			fmt.Println("Invalid action")
@@ -187,6 +188,11 @@ func (hand *Hand) bet(player *Player) bool {
 			continue
 		}
 
+		if player.chips-betAmount < 0 {
+			fmt.Println("You're betting more than you have.")
+			continue
+		}
+
 		hand.pot.BuildBet(betAmount, player)
 		hand.currentCall = betAmount
 
@@ -231,13 +237,21 @@ func (hand *Hand) raise(player *Player) bool {
 	}
 }
 
-func (hand *Hand) fold(player *Player) bool {
+func (hand *Hand) fold(player *Player) {
 	player.hasFolded = true
 	player.hasActed = true
 	hand.haveFoldedCount++
-	return true
 }
 
 func (hand *Hand) IsOver() bool {
 	return len(hand.players)-hand.haveFoldedCount == 1
+}
+
+func (hand *Hand) allIn(player *Player) {
+	allInAmount := player.chips
+
+	hand.pot.BuildBet(allInAmount, player)
+
+	player.hasAllIn = true
+	player.hasActed = true
 }
