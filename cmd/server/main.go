@@ -45,7 +45,7 @@ func main() {
 		hand := game.GetHand()
 
 		fmt.Println("Blind bets posted:")
-		hand.ResetFoldedHands()
+		hand.ResetPlayersForNewHand()
 		hand.PostBlinds()
 		for _, player := range hand.GetPlayers() {
 			fmt.Printf("%v's Current Bet: %v\n", player.GetName(), player.GetCurrentBet())

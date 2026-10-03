@@ -25,35 +25,3 @@ func comparePlayersHandValues(player1 *Player, player2 *Player) (*Player, bool) 
 
 	return player2, false
 }
-
-func (hand *Hand) PickWinners() {
-	hand.winners = nil
-
-	for _, player := range hand.players {
-		if !player.hasFolded {
-			hand.winners = []*Player{player}
-			break
-		}
-	}
-
-	if len(hand.winners) == 0 {
-		return
-	}
-
-	for _, player := range hand.players {
-		if player.hasFolded || player == hand.winners[0] {
-			continue
-		}
-
-		winningPlayer, isTied := comparePlayersHandValues(
-			hand.winners[0],
-			player,
-		)
-
-		if isTied {
-			hand.winners = append(hand.winners, player)
-		} else if winningPlayer == player {
-			hand.winners = []*Player{player}
-		}
-	}
-}

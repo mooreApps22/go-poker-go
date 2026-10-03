@@ -11,19 +11,6 @@ func (hand *Hand) PostBlinds() {
 	hand.pot.BuildBet(BigBlindBet, hand.players[hand.bigBlindIndex])
 }
 
-func (hand *Hand) AwardPot() {
-	winnings := hand.pot.value / int64(len(hand.winners))
-
-	for _, winner := range hand.winners {
-		winner.CollectWinnings(winnings)
-	}
-
-	hand.pot.value = 0
-	for _, player := range hand.players {
-		player.ResetCurrentBet()
-	}
-}
-
 func (hand Hand) GetPot() Pot {
 	return hand.pot
 }

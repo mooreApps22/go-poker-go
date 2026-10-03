@@ -5,33 +5,6 @@ import (
 	"strings"
 )
 
-/* HAND
-deck                Deck
-players             []*Player
-communityCards      [5]Card
-communityCardsDealt int
-phase               HandPhase
-winners             []*Player
-dealerIndex         int
-smallBlindIndex     int
-bigBlindIndex       int
-utgIndex            int // utg -> Under The Gun
-pot                 Pot
-currentCall         int64
-*/
-
-/* PLAYER
-id            int
-name          string
-chips         int64
-holeCards     [2]Card
-bestHandValue HandValue
-bestCards     [5]Card
-currentBet    int64
-hasFolded     bool
-hasChecked    bool
-*/
-
 func (hand *Hand) AcceptBets() {
 	if hand.IsOver() {
 		return

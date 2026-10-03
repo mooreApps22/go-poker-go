@@ -3,6 +3,7 @@ package poker
 type Pot struct {
 	value           int64
 	eligiblePlayers []*Player
+	winners         []*Player
 }
 
 func NewPot() Pot {

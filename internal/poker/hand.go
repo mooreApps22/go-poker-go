@@ -71,3 +71,9 @@ func NewHand(players []*Player) Hand {
 		pots:               nil,
 	}
 }
+
+func (hand *Hand) ResetPlayersForNewHand() {
+	for _, player := range hand.players {
+		player.ResetForNewHand()
+	}
+}

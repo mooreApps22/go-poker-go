@@ -76,6 +76,7 @@ func (hand *Hand) CreateSidePots() {
 	hand.collectContributionLevels()
 	var sidePot int64
 	var previousLevel int64
+
 	for potIndex, level := range hand.contributionLevels {
 		numberOfPlayerWithLevel := hand.countPlayersWithContributionLevel(level)
 		sidePot, previousLevel = calculateSidePot(
@@ -90,4 +91,56 @@ func (hand *Hand) CreateSidePots() {
 	}
 
 	hand.outputPotsData()
+}
+
+func (hand *Hand) PickWinners() {
+	//hand.winners = nil
+
+	for potIndex := range hand.pots {
+		pot := &hand.pots[potIndex]
+
+		for _, player := range pot.eligiblePlayers {
+			if !player.hasFolded {
+				pot.winners = []*Player{player}
+				break
+			}
+		}
+
+		if len(pot.winners) == 0 {
+			continue
+		}
+
+		for _, player := range pot.eligiblePlayers {
+			if player.hasFolded || player == pot.winners[0] {
+				continue
+			}
+
+			winningPlayer, isTied := comparePlayersHandValues(
+				pot.winners[0],
+				player,
+			)
+
+			if isTied {
+				pot.winners = append(pot.winners, player)
+			} else if winningPlayer == player {
+				pot.winners = []*Player{player}
+			}
+		}
+	}
+}
+
+func (hand *Hand) AwardPot() {
+	for potIndex := range hand.pots {
+		pot := &hand.pots[potIndex]
+
+		if len(pot.winners) == 0 {
+			continue
+		}
+
+		winnings := pot.value / int64(len(pot.winners))
+
+		for _, winner := range pot.winners {
+			winner.CollectWinnings(winnings)
+		}
+	}
 }

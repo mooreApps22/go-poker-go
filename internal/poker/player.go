@@ -55,6 +55,7 @@ func (player *Player) PlaceBet(betAmount int64) int64 {
 
 func (player *Player) CollectWinnings(winnings int64) {
 	player.chips += winnings
+	fmt.Printf("Winner: %v collects $%v\n", player.name, winnings)
 }
 
 func (player *Player) ResetCurrentBet() {
@@ -67,4 +68,12 @@ func (player *Player) GetCurrentBet() int64 {
 
 func (player Player) GetName() string {
 	return player.name
+}
+
+func (player *Player) ResetForNewHand() {
+	player.currentBet = 0
+	player.totalContribution = 0
+	player.hasActed = false
+	player.hasFolded = false
+	player.hasAllIn = false
 }
