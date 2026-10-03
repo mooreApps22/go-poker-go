@@ -3,17 +3,18 @@ package poker
 import "fmt"
 
 type Player struct {
-	id            int
-	name          string
-	chips         int64
-	holeCards     [2]Card
-	bestHandValue HandValue
-	bestCards     [5]Card
-	currentBet    int64
-	hasFolded     bool
-	hasChecked    bool
-	hasActed      bool
-	hasAllIn      bool
+	id                int
+	name              string
+	chips             int64
+	holeCards         [2]Card
+	bestHandValue     HandValue
+	bestCards         [5]Card
+	currentBet        int64
+	hasFolded         bool
+	hasChecked        bool
+	hasActed          bool
+	hasAllIn          bool
+	totalContribution int64
 }
 
 func NewPlayer(id int, name string) Player {
@@ -47,6 +48,7 @@ func (player *Player) GetBestCards() []Card {
 func (player *Player) PlaceBet(betAmount int64) int64 {
 	player.chips -= betAmount
 	player.currentBet += betAmount
+	player.totalContribution += betAmount
 
 	return betAmount
 }

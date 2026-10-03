@@ -95,10 +95,12 @@ func main() {
 			fmt.Println()
 		}
 
+		hand.CreateSidePots()
 		hand.PickWinners()
 		hand.AwardPot()
 		//		fmt.Println("Winner: ", hand.GetWinner())
 		for _, player := range hand.GetWinner() {
+			fmt.Printf("Winner: %v\n", player.GetName())
 			fmt.Println(poker.FormatCards(player.GetBestCards()))
 		}
 		game.RotateDealer()

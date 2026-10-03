@@ -17,6 +17,8 @@ type Hand struct {
 	voluntaryBets       bool
 	minimumBet          int64
 	haveFoldedCount     int
+	contributionLevels  []int64
+	pots                []Pot
 }
 
 const BigBlindBet = 4_000
@@ -57,13 +59,15 @@ func NewHand(players []*Player) Hand {
 	deck.Shuffle()
 
 	return Hand{
-		deck:            deck,
-		players:         players,
-		phase:           SetUp,
-		pot:             NewPot(),
-		currentCall:     BigBlindBet,
-		voluntaryBets:   false,
-		minimumBet:      BigBlindBet,
-		haveFoldedCount: 0,
+		deck:               deck,
+		players:            players,
+		phase:              SetUp,
+		pot:                NewPot(),
+		currentCall:        BigBlindBet,
+		voluntaryBets:      false,
+		minimumBet:         BigBlindBet,
+		haveFoldedCount:    0,
+		contributionLevels: nil,
+		pots:               nil,
 	}
 }

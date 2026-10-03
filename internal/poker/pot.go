@@ -1,12 +1,14 @@
 package poker
 
 type Pot struct {
-	value int64
+	value           int64
+	eligiblePlayers []*Player
 }
 
 func NewPot() Pot {
 	return Pot{
-		value: 0,
+		value:           0,
+		eligiblePlayers: nil,
 	}
 }
 
