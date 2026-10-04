@@ -77,6 +77,7 @@ func (hand *Hand) displayPlayerActions(player *Player) {
 	}
 	fmt.Println("[F] Fold")
 	fmt.Println("[A] All In")
+	fmt.Println("[P] Chips")
 }
 
 func (hand *Hand) handlePlayerInput(player *Player) {
@@ -115,6 +116,8 @@ func (hand *Hand) handlePlayerInput(player *Player) {
 		case "A", "ALL", "ALLIN", "ALL IN":
 			hand.allIn(player)
 			return
+		case "P", "CHIP", "CHIPS":
+			fmt.Println("Chips: $", player.chips)
 		default:
 			fmt.Println("Invalid action")
 			player.hasActed = false
@@ -130,7 +133,14 @@ func (hand *Hand) call(player *Player) bool {
 		return false
 	}
 
-	hand.pot.BuildBet(amountToCall, player)
+	if amountToCall >= player.chips {
+		player.PlaceBet(player.chips)
+		player.hasAllIn = true
+		player.hasActed = true
+		return true
+	}
+
+	player.PlaceBet(amountToCall)
 	player.hasActed = true
 	return true
 }
@@ -161,12 +171,12 @@ func (hand *Hand) bet(player *Player) bool {
 			continue
 		}
 
-		if player.chips-betAmount < 0 {
+		if betAmount > player.chips {
 			fmt.Println("You're betting more than you have.")
 			continue
 		}
 
-		hand.pot.BuildBet(betAmount, player)
+		player.PlaceBet(betAmount)
 		hand.currentCall = betAmount
 
 		for _, player := range hand.players {
@@ -200,7 +210,8 @@ func (hand *Hand) raise(player *Player) bool {
 		}
 		amountToRaise := raiseAmount - player.currentBet
 
-		hand.pot.BuildBet(amountToRaise, player)
+		//hand.pot.BuildBet(amountToRaise, player)
+		player.PlaceBet(amountToRaise)
 		hand.currentCall = raiseAmount
 		for _, player := range hand.players {
 			player.hasActed = false
@@ -223,7 +234,17 @@ func (hand *Hand) IsOver() bool {
 func (hand *Hand) allIn(player *Player) {
 	allInAmount := player.chips
 
-	hand.pot.BuildBet(allInAmount, player)
+	player.PlaceBet(allInAmount)
+
+	if player.currentBet > hand.currentCall {
+		hand.currentCall = player.currentBet
+
+		hand.currentCall = player.currentBet
+
+		for _, otherPlayer := range hand.players {
+			otherPlayer.hasActed = false
+		}
+	}
 
 	player.hasAllIn = true
 	player.hasActed = true

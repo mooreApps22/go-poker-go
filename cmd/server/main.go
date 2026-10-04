@@ -29,6 +29,7 @@ func main() {
 		fmt.Println("Quit [Q]")
 		fmt.Print("> ")
 
+		game.RotateDealer()
 		var input string
 		fmt.Scan(&input)
 
@@ -44,6 +45,7 @@ func main() {
 		game.NewHand()
 		hand := game.GetHand()
 
+		// PRE-FLOP PHASE
 		fmt.Println("Blind bets posted:")
 		hand.ResetPlayersForNewHand()
 		hand.PostBlinds()
@@ -65,44 +67,49 @@ func main() {
 		*/
 		hand.AcceptBets()
 
-		//BETS
+		//FLOP PHASE
 		hand.DealFlopCards()
 		hand.AcceptBets()
 		fmt.Println("Community Flop Cards:")
 		fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
 
+		//TURN PHASE
 		hand.DealTurnCard()
 		hand.AcceptBets()
 		fmt.Println("Community Turn Card:")
 		fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
 
+		//RIVER PHASE
 		hand.DealRiverCard()
 		hand.AcceptBets()
 		fmt.Println("Community River Card:")
 		fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
 
-		fmt.Println("SHOWDOWN!!!!: ")
+		hand.ShowDown()
 
-		//Test
-		hand.EvaluateEachPlayersBestHand()
+		/*
+			for offset := 0; offset < len(hand.GetPlayers()); offset++ {
+				playerIndex := (hand.GetSmallBlindIndex() + offset) % len(hand.GetPlayers())
+				player := hand.GetPlayers()[playerIndex]
 
-		for offset := 0; offset < len(hand.GetPlayers()); offset++ {
-			playerIndex := (hand.GetSmallBlindIndex() + offset) % len(hand.GetPlayers())
-			player := hand.GetPlayers()[playerIndex]
-
-			fmt.Printf("%v's Best Hand: %v\n", player.GetName(), player.GetBestHandValue().Category.String())
-			fmt.Println("Tiebreakers: ", player.GetBestHandValue().Tiebreakers)
-			fmt.Println()
-		}
+				fmt.Printf("%v's Best Hand: %v\n", player.GetName(), player.GetBestHandValue().Category.String())
+				fmt.Println("Tiebreakers: ", player.GetBestHandValue().Tiebreakers)
+				fmt.Println()
+			}
+		*/
 
 		hand.CreateSidePots()
 		hand.PickWinners()
 		hand.AwardPot()
-		//		fmt.Println("Winner: ", hand.GetWinner())
+
+		//DISPLAY WINNERS
 		for _, player := range hand.GetWinner() {
 			fmt.Printf("Winner: %v\n", player.GetName())
 			fmt.Println(poker.FormatCards(player.GetBestCards()))
 		}
-		game.RotateDealer()
+
+		fmt.Println()
+		fmt.Println("END OF HAND")
+		fmt.Println()
 	}
 }
