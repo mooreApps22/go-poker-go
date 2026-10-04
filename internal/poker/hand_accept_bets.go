@@ -56,11 +56,15 @@ func (hand *Hand) bettingRoundComplete() bool {
 }
 
 func (hand *Hand) displayPlayerActions(player *Player) {
-	fmt.Println("Community Cards Dealt:")
-	fmt.Println(FormatCards(hand.GetCommunityCardsDealt()))
-	fmt.Printf("%v's Hole Cards:\n", player.name)
-	fmt.Println(FormatCards(player.GetHoleCards()))
-	fmt.Println("Current Pot: ", hand.GetCurrentPotValue())
+	if len(hand.GetCommunityCardsDealt()) > 0 {
+		fmt.Println("Community Cards Dealt:")
+		fmt.Println(FormatCards(hand.GetCommunityCardsDealt()))
+	}
+	if len(player.holeCards) > 0 {
+		fmt.Printf("%v's Hole Cards:\n", player.name)
+		fmt.Println(FormatCards(player.GetHoleCards()))
+	}
+	fmt.Println("Current Pot: $", hand.GetCurrentPotValue())
 	fmt.Printf("%v's Turn:\n", player.name)
 	if hand.currentCall == 0 {
 		fmt.Println("[K] Check")

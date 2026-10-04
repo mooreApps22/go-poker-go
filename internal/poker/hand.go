@@ -57,6 +57,8 @@ func NewHand(players []*Player) Hand {
 	deck := NewDeck()
 	deck.Shuffle()
 
+	// only add players with chips > 0
+
 	return Hand{
 		deck:               deck,
 		players:            players,

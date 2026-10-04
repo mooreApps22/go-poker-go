@@ -1,5 +1,7 @@
 package poker
 
+import "fmt"
+
 type Game struct {
 	players     []*Player
 	dealerIndex int
@@ -12,8 +14,25 @@ func NewGame(players []*Player) Game {
 	}
 }
 
-func (game *Game) NewHand() {
+func (game *Game) removePlayersWithNoChips() {
+	activePlayers := game.players[:0]
+
+	for _, player := range game.players {
+		if player.chips > 0 {
+			activePlayers = append(activePlayers, player)
+		} else {
+			fmt.Printf("%v has left the poker table, due to losing all chips.\n", player.name)
+		}
+	}
+
+	game.players = activePlayers
+}
+
+func (game *Game) SetUpNewHand() {
+	game.removePlayersWithNoChips()
+
 	game.hand = NewHand(game.players)
+
 	game.hand.dealerIndex = (game.dealerIndex + 1) % len(game.players)
 	game.hand.smallBlindIndex = (game.dealerIndex + 2) % len(game.players)
 	game.hand.bigBlindIndex = (game.dealerIndex + 3) % len(game.players)

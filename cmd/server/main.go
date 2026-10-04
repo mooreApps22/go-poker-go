@@ -25,8 +25,8 @@ func main() {
 	game := poker.NewGame(players)
 
 	for {
-		fmt.Println("New Hand [N]")
-		fmt.Println("Quit [Q]")
+		fmt.Println("[N] New Hand")
+		fmt.Println("[Q] Quit")
 		fmt.Print("> ")
 
 		game.RotateDealer()
@@ -42,7 +42,7 @@ func main() {
 			continue
 		}
 
-		game.NewHand()
+		game.SetUpNewHand()
 		hand := game.GetHand()
 
 		// PRE-FLOP PHASE
