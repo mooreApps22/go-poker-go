@@ -31,3 +31,12 @@ func (hand Hand) GetBigBlindIndex() int {
 func (hand Hand) GetUtgIndex() int {
 	return hand.utgIndex
 }
+
+func (hand *Hand) GetCurrentPotValue() int64 {
+	var currentPotValue int64
+
+	for _, player := range hand.players {
+		currentPotValue += player.totalContribution
+	}
+	return currentPotValue
+}

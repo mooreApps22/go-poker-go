@@ -11,7 +11,6 @@ type Hand struct {
 	smallBlindIndex     int
 	bigBlindIndex       int
 	utgIndex            int // utg -> Under The Gun
-	pot                 Pot
 	currentCall         int64
 	currentPlayerIndex  int
 	voluntaryBets       bool
@@ -62,7 +61,6 @@ func NewHand(players []*Player) Hand {
 		deck:               deck,
 		players:            players,
 		phase:              SetUp,
-		pot:                NewPot(),
 		currentCall:        BigBlindBet,
 		voluntaryBets:      false,
 		minimumBet:         BigBlindBet,

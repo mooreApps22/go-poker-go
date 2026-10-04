@@ -7,10 +7,6 @@ func (hand *Hand) ResetFoldedHands() {
 }
 
 func (hand *Hand) PostBlinds() {
-	hand.pot.BuildBet(SmallBlindBet, hand.players[hand.smallBlindIndex])
-	hand.pot.BuildBet(BigBlindBet, hand.players[hand.bigBlindIndex])
-}
-
-func (hand Hand) GetPot() Pot {
-	return hand.pot
+	hand.players[hand.smallBlindIndex].PlaceBet(SmallBlindBet)
+	hand.players[hand.bigBlindIndex].PlaceBet(BigBlindBet)
 }
