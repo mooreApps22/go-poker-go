@@ -98,9 +98,9 @@ func main() {
 			}
 		*/
 
-		hand.CreateSidePots()
+		hand.CreatePots()
 		hand.PickWinners()
-		hand.AwardPot()
+		hand.AwardPots()
 
 		//DISPLAY WINNERS
 		for _, player := range hand.GetWinner() {
