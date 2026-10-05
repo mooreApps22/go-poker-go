@@ -203,6 +203,11 @@ func (hand *Hand) raise(player *Player) bool {
 			continue
 		}
 
+		if raiseAmount > player.chips {
+			fmt.Println("You cannot raise more than $", player.chips)
+			continue
+		}
+
 		if raiseAmount <= hand.currentCall {
 			fmt.Println("Your raise must be greater than the current call.")
 			continue
