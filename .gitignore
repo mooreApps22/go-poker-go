@@ -33,6 +33,7 @@ go.work.sum
 
 #Program Name
 poker-server
+poker-client
 
 #Notes
 notes/
