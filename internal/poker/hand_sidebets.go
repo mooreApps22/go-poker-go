@@ -88,21 +88,22 @@ func (hand *Hand) CreatePots() {
 	var previousLevel int64
 
 	for _, level := range hand.contributionLevels {
-		numberOfPlayerWithLevel := hand.countPlayersWithContributionLevel(level)
-		if numberOfPlayerWithLevel == 1 {
-			player := hand.getPlayerAtOrAboveContributionLevel(level)
-			if player != nil {
-				player.CollectWinnings(sidePot)
-			}
 
-			continue
-		}
+		numberOfPlayerWithLevel := hand.countPlayersWithContributionLevel(level)
 
 		sidePot, previousLevel = calculateSidePot(
 			level,
 			previousLevel,
 			int(numberOfPlayerWithLevel),
 		)
+
+		if numberOfPlayerWithLevel == 1 {
+			player := hand.getPlayerAtOrAboveContributionLevel(level)
+			if player != nil {
+				player.CollectWinnings(sidePot) // return chips
+			}
+			continue
+		}
 
 		eligiblePlayers := hand.getEligiblePlayers(level)
 

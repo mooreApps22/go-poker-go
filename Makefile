@@ -22,3 +22,5 @@ docker-down:
 docker-clean:
 	docker compose down -v
 
+test-poker:
+	go test -v ./internal/poker

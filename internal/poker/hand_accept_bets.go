@@ -138,6 +138,8 @@ func (hand *Hand) call(player *Player) bool {
 	}
 
 	if amountToCall >= player.chips {
+		fmt.Println("You cannot call more than $", player.chips)
+		fmt.Println("You have chosen to go ALL IN with $", player.chips)
 		player.PlaceBet(player.chips)
 		player.hasAllIn = true
 		player.hasActed = true
@@ -176,7 +178,7 @@ func (hand *Hand) bet(player *Player) bool {
 		}
 
 		if betAmount > player.chips {
-			fmt.Println("You're betting more than you have.")
+			fmt.Println("You cannot bet more than $", player.chips)
 			continue
 		}
 
@@ -238,6 +240,18 @@ func (hand *Hand) fold(player *Player) {
 
 func (hand *Hand) IsOver() bool {
 	return len(hand.players)-hand.haveFoldedCount == 1
+}
+
+func (hand *Hand) CanContinueBetting() bool {
+	activePlayerCount := 0
+
+	for _, player := range hand.players {
+		if !player.hasFolded && !player.hasAllIn {
+			activePlayerCount++
+		}
+	}
+
+	return activePlayerCount >= 2
 }
 
 func (hand *Hand) allIn(player *Player) {
