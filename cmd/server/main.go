@@ -4,10 +4,20 @@ import (
 	"fmt"
 
 	"github.com/mooreApps22/go-poker-go/internal/poker"
+	"github.com/mooreApps22/go-poker-go/internal/server"
 )
 
 func main() {
-	fmt.Println("Poker server starting...")
+
+	listener, err := server.CreateListener(8080)
+	if err != nil {
+		fmt.Println("Error creating listener:", err)
+		return
+	}
+
+	fmt.Println("Go Poker Go Server is listening...")
+	defer listener.Close()
+
 	fmt.Println()
 
 	player1 := poker.NewPlayer(1, "Adam")
