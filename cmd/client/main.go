@@ -15,4 +15,16 @@ func main() {
 
 	defer connection.Close()
 	fmt.Println("Connected to Go Poker Go Server...")
+
+	for {
+		var input string
+		fmt.Print("> ")
+		fmt.Scanln(&input)
+
+		_, err = connection.Write([]byte(input + "\n"))
+		if err != nil {
+			fmt.Println("Error sending message:", err)
+			return
+		}
+	}
 }
