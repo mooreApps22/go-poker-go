@@ -21,6 +21,11 @@ func handleClient(connection net.Conn) {
 		}
 
 		fmt.Print("Incoming: ", message)
+		_, err = connection.Write([]byte("Message received\n"))
+		if err != nil {
+			fmt.Println("Error writing to client:", err)
+			return
+		}
 	}
 }
 
