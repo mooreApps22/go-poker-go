@@ -3,10 +3,26 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"net"
 
 	//	"github.com/mooreApps22/go-poker-go/internal/poker"
 	"github.com/mooreApps22/go-poker-go/internal/server"
 )
+
+func handleClient(connection net.Conn) {
+	defer connection.Close()
+
+	reader := bufio.NewReader(connection)
+	for {
+		message, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Client disconnected:", connection.RemoteAddr())
+			return
+		}
+
+		fmt.Print("Incoming: ", message)
+	}
+}
 
 func main() {
 
@@ -18,22 +34,16 @@ func main() {
 
 	fmt.Println("Go Poker Go Server is listening...")
 
-	connection, err := listener.Accept()
-	if err != nil {
-		fmt.Println("Error accepting connection:", err)
-		return
-	}
-	fmt.Println("Client connected:", connection.RemoteAddr())
-
-	reader := bufio.NewReader(connection)
-
 	for {
-		message, err := reader.ReadString('\n')
-		fmt.Print("Incoming: ", message)
+		connection, err := listener.Accept()
 		if err != nil {
-			fmt.Println("Error reading from client:", err)
+			fmt.Println("Error accepting connection:", err)
 			return
 		}
+
+		fmt.Println("Client connected:", connection.RemoteAddr())
+
+		go handleClient(connection)
 	}
 
 	/*

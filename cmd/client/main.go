@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 
 	"github.com/mooreApps22/go-poker-go/internal/client"
 )
@@ -16,12 +18,17 @@ func main() {
 	defer connection.Close()
 	fmt.Println("Connected to Go Poker Go Server...")
 
-	for {
-		var input string
-		fmt.Print("> ")
-		fmt.Scanln(&input)
+	inputReader := bufio.NewReader(os.Stdin)
 
-		_, err = connection.Write([]byte(input + "\n"))
+	for {
+		fmt.Print("> ")
+		input, err := inputReader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading input:", err)
+			return
+		}
+
+		_, err = connection.Write([]byte(input))
 		if err != nil {
 			fmt.Println("Error sending message:", err)
 			return
