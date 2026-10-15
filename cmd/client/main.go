@@ -9,28 +9,7 @@ import (
 	"github.com/mooreApps22/go-poker-go/internal/client"
 )
 
-func readServerMessages(connection net.Conn) {
-	serverReader := bufio.NewReader(connection)
-
-	response, err := serverReader.ReadString('\n')
-	if err != nil {
-		fmt.Println("Error reading from server:", err)
-		return
-	}
-
-	fmt.Print("Server: ", response)
-}
-
-func main() {
-	connection, err := client.CreateDial("localhost", 8080)
-	if err != nil {
-		fmt.Println("Client connection error", err)
-		return
-	}
-
-	defer connection.Close()
-	fmt.Println("Connected to Go Poker Go Server...")
-
+func readUserInput(connection net.Conn) {
 	inputReader := bufio.NewReader(os.Stdin)
 
 	for {
@@ -46,8 +25,34 @@ func main() {
 			fmt.Println("Error sending message:", err)
 			return
 		}
-
-		readServerMessages(connection)
-
 	}
+}
+
+func readServerMessages(connection net.Conn) {
+	serverReader := bufio.NewReader(connection)
+
+	for {
+		response, err := serverReader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Error reading from server:", err)
+			return
+		}
+
+		fmt.Print("Server: ", response)
+	}
+}
+
+func main() {
+	connection, err := client.CreateDial("localhost", 8080)
+	if err != nil {
+		fmt.Println("Client connection error", err)
+		return
+	}
+
+	defer connection.Close()
+	fmt.Println("Connected to Go Poker Go Server...")
+
+	go readServerMessages(connection)
+
+	readUserInput(connection)
 }
