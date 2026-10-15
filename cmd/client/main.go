@@ -13,7 +13,6 @@ func readUserInput(connection net.Conn) {
 	inputReader := bufio.NewReader(os.Stdin)
 
 	for {
-		fmt.Print("> ")
 		input, err := inputReader.ReadString('\n')
 		if err != nil {
 			fmt.Println("Error reading input:", err)
