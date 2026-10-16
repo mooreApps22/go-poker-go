@@ -9,7 +9,7 @@ import (
 	"github.com/mooreApps22/go-poker-go/internal/server"
 )
 
-func handleClient(connection net.Conn) {
+func handleClient(connection net.Conn, actionChannel chan string) {
 	defer connection.Close()
 
 	reader := bufio.NewReader(connection)
@@ -20,12 +20,18 @@ func handleClient(connection net.Conn) {
 			return
 		}
 
-		fmt.Print("Incoming: ", message)
+		actionChannel <- message
 		_, err = connection.Write([]byte("Message received\n"))
 		if err != nil {
 			fmt.Println("Error writing to client:", err)
 			return
 		}
+	}
+}
+
+func handleActions(actionChannel chan string) {
+	for action := range actionChannel {
+		fmt.Print("Action: ", action)
 	}
 }
 
@@ -39,6 +45,10 @@ func main() {
 
 	fmt.Println("Go Poker Go Server is listening...")
 
+	actionChannel := make(chan string)
+
+	go handleActions(actionChannel)
+
 	for {
 		connection, err := listener.Accept()
 		if err != nil {
@@ -48,7 +58,7 @@ func main() {
 
 		fmt.Println("Client connected:", connection.RemoteAddr())
 
-		go handleClient(connection)
+		go handleClient(connection, actionChannel)
 	}
 
 	/*
