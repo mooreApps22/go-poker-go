@@ -1,39 +1,11 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"net"
 
 	//	"github.com/mooreApps22/go-poker-go/internal/poker"
 	"github.com/mooreApps22/go-poker-go/internal/server"
 )
-
-func handleClient(connection net.Conn, actionChannel chan string) {
-	defer connection.Close()
-
-	reader := bufio.NewReader(connection)
-	for {
-		message, err := reader.ReadString('\n')
-		if err != nil {
-			fmt.Println("Client disconnected:", connection.RemoteAddr())
-			return
-		}
-
-		actionChannel <- message
-		_, err = connection.Write([]byte("Message received\n"))
-		if err != nil {
-			fmt.Println("Error writing to client:", err)
-			return
-		}
-	}
-}
-
-func handleActions(actionChannel chan string) {
-	for action := range actionChannel {
-		fmt.Print("Action: ", action)
-	}
-}
 
 func main() {
 
@@ -45,21 +17,9 @@ func main() {
 
 	fmt.Println("Go Poker Go Server is listening...")
 
-	actionChannel := make(chan string)
+	actionChannel := make(chan server.ClientMessage)
 
-	go handleActions(actionChannel)
-
-	for {
-		connection, err := listener.Accept()
-		if err != nil {
-			fmt.Println("Error accepting connection:", err)
-			return
-		}
-
-		fmt.Println("Client connected:", connection.RemoteAddr())
-
-		go handleClient(connection, actionChannel)
-	}
+	server.Run(listener, actionChannel)
 
 	/*
 		fmt.Println()
