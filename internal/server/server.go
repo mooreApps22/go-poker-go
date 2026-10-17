@@ -31,16 +31,6 @@ func createListener(port int) (net.Listener, error) {
 	return net.Listen("tcp", portString)
 }
 
-func handleActions(actionChannel chan ClientMessage) {
-	for action := range actionChannel {
-		fmt.Printf(
-			"Client %d: %s",
-			action.clientID,
-			action.message,
-		)
-	}
-}
-
 func (server *Server) Run() {
 
 	nextClientID := 1
@@ -59,5 +49,17 @@ func (server *Server) Run() {
 		fmt.Println("Client connected:", connection.RemoteAddr())
 
 		go handleClient(client, server.actionChannel)
+	}
+}
+
+func handleActions(actionChannel chan ClientMessage) {
+	for clientMessage := range actionChannel {
+		playerAction, err := parseClientMessage(clientMessage)
+		if err != nil {
+			fmt.Println("Error handling Player Actions:", err)
+			continue
+		}
+
+		fmt.Printf("Player action: %+v\n", playerAction)
 	}
 }

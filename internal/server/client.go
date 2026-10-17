@@ -39,11 +39,5 @@ func handleClient(client *Client, actionChannel chan ClientMessage) {
 			clientID: client.id,
 			message:  message,
 		}
-
-		_, err = client.connection.Write([]byte("Message received\n"))
-		if err != nil {
-			fmt.Println("Error writing to client:", err)
-			return
-		}
 	}
 }
