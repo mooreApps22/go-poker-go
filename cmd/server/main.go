@@ -9,17 +9,14 @@ import (
 
 func main() {
 
-	listener, err := server.CreateListener(8080)
+	pokerServer, err := server.NewServer(8080)
 	if err != nil {
-		fmt.Println("Error creating listener:", err)
+		fmt.Println("Error creating server:", err)
 		return
 	}
-
 	fmt.Println("Go Poker Go Server is listening...")
 
-	actionChannel := make(chan server.ClientMessage)
-
-	server.Run(listener, actionChannel)
+	pokerServer.Run()
 
 	/*
 		fmt.Println()

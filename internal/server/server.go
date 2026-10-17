@@ -5,7 +5,27 @@ import (
 	"net"
 )
 
-func CreateListener(port int) (net.Listener, error) {
+type Server struct {
+	listener      net.Listener
+	actionChannel chan ClientMessage
+	nextClientID  int
+}
+
+func NewServer(port int) (Server, error) {
+	listener, err := createListener(8080)
+	if err != nil {
+		fmt.Println("Error creating listener:", err)
+		return Server{}, err
+	}
+
+	return Server{
+		listener:      listener,
+		actionChannel: make(chan ClientMessage),
+		nextClientID:  1,
+	}, nil
+}
+
+func createListener(port int) (net.Listener, error) {
 	portString := fmt.Sprintf(":%d", port)
 
 	return net.Listen("tcp", portString)
@@ -21,14 +41,14 @@ func handleActions(actionChannel chan ClientMessage) {
 	}
 }
 
-func Run(listener net.Listener, actionChannel chan ClientMessage) {
+func (server *Server) Run() {
 
 	nextClientID := 1
 
-	go handleActions(actionChannel)
+	go handleActions(server.actionChannel)
 
 	for {
-		connection, err := listener.Accept()
+		connection, err := server.listener.Accept()
 		if err != nil {
 			fmt.Println("Error accepting connection:", err)
 			continue
@@ -38,6 +58,6 @@ func Run(listener net.Listener, actionChannel chan ClientMessage) {
 
 		fmt.Println("Client connected:", connection.RemoteAddr())
 
-		go handleClient(client, actionChannel)
+		go handleClient(client, server.actionChannel)
 	}
 }
