@@ -60,6 +60,6 @@ func handleActions(actionChannel chan ClientMessage) {
 			continue
 		}
 
-		fmt.Printf("Player action: %+v\n", playerAction)
+		fmt.Printf("Player action: %+v\n", playerAction.Action.String())
 	}
 }

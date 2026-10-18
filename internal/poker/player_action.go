@@ -18,3 +18,24 @@ type PlayerAction struct {
 	Action   ActionType
 	Amount   int64
 }
+
+func (action ActionType) String() string {
+	switch action {
+	case Fold:
+		return "FOLD"
+	case Check:
+		return "CHECK"
+	case Call:
+		return "CALL"
+	case Bet:
+		return "BET"
+	case Raise:
+		return "RAISE"
+	case AllIn:
+		return "ALL IN"
+	case Chips:
+		return "CHIPS"
+	default:
+		return "INVALID"
+	}
+}
