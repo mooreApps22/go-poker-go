@@ -2,8 +2,8 @@ package server
 
 import (
 	"fmt"
+	"github.com/mooreApps22/go-poker-go/internal/poker"
 	"net"
-	"time"
 )
 
 type Server struct {
@@ -15,7 +15,11 @@ type Server struct {
 func NewServer(port int) (Server, error) {
 	listener, err := createListener(8080)
 	if err != nil {
-		fmt.Println("Error creating listener:", err)
+		fmt.Printf(
+			"[%s] Error creating listener: %v\n",
+			my_timestamp(),
+			err,
+		)
 		return Server{}, err
 	}
 
@@ -41,7 +45,11 @@ func (server *Server) Run() {
 	for {
 		connection, err := server.listener.Accept()
 		if err != nil {
-			fmt.Println("Error accepting connection:", err)
+			logClientError(
+				nil,
+				"Error creating listener",
+				err,
+			)
 			continue
 		}
 		client := NewClient(server.nextClientID, connection)
@@ -49,7 +57,7 @@ func (server *Server) Run() {
 
 		fmt.Printf(
 			"[%s] Client %d connected: %s\n",
-			time.Now().Format(time.TimeOnly),
+			my_timestamp(),
 			client.id,
 			connection.RemoteAddr(),
 		)
@@ -58,48 +66,45 @@ func (server *Server) Run() {
 	}
 }
 
+func buildActionResponse(playerAction poker.PlayerAction, parseErr error) string {
+	if parseErr != nil {
+		return fmt.Sprintf("Invalid action: %s\n", parseErr)
+	}
+
+	if playerAction.Amount > 0 {
+		return fmt.Sprintf(
+			"Action received: %s $%d\n",
+			playerAction.Action.String(),
+			playerAction.Amount,
+		)
+	}
+
+	return fmt.Sprintf(
+		"Action received: %s\n",
+		playerAction.Action.String(),
+	)
+}
+
 func handleActions(actionChannel chan ClientMessage) {
 	for clientMessage := range actionChannel {
 		playerAction, parseErr := parseClientMessage(clientMessage)
 
-		var response string
-
-		if parseErr != nil {
-			response = fmt.Sprintf("Invalid action: %s\n", parseErr)
-		} else if playerAction.Amount > 0 {
-			response = fmt.Sprintf(
-				"Action received: %s $%d\n",
-				playerAction.Action.String(),
-				playerAction.Amount,
-			)
-		} else {
-			response = fmt.Sprintf(
-				"Action received: %s\n",
-				playerAction.Action.String(),
-			)
-		}
+		response := buildActionResponse(playerAction, parseErr)
 
 		sendErr := sendClientResponse(clientMessage.client, response)
 		if sendErr != nil {
-			fmt.Println("Error sending client response:", sendErr)
+			logClientError(
+				clientMessage.client,
+				"Error sending client response:",
+				sendErr,
+			)
+			continue
 		}
-		fmt.Printf(
-			"Client %d: %s",
-			clientMessage.client.id,
-			playerAction.Action.String(),
+
+		logPlayerAction(
+			clientMessage.client,
+			playerAction,
+			parseErr,
 		)
-		if playerAction.Amount > 0 {
-			fmt.Printf(
-				" %d ",
-				playerAction.Amount,
-			)
-		}
-		if parseErr != nil {
-			fmt.Printf(
-				" Error: %s",
-				parseErr,
-			)
-		}
-		fmt.Printf("\n")
 	}
 }
