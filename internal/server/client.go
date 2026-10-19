@@ -12,8 +12,8 @@ type Client struct {
 }
 
 type ClientMessage struct {
-	clientID int
-	message  string
+	client  *Client
+	message string
 }
 
 func NewClient(id int, connection net.Conn) *Client {
@@ -36,8 +36,17 @@ func handleClientConnection(client *Client, actionChannel chan ClientMessage) {
 		}
 
 		actionChannel <- ClientMessage{
-			clientID: client.id,
-			message:  message,
+			client:  client,
+			message: message,
 		}
 	}
+}
+
+func sendClientResponse(client *Client, response string) error {
+	_, err := client.connection.Write([]byte(response))
+	if err != nil {
+		fmt.Printf("Error writing to connection: %v\n", err)
+		return err
+	}
+	return nil
 }

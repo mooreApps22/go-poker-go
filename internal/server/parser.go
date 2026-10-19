@@ -67,7 +67,7 @@ func parseClientMessage(clientMessage ClientMessage) (poker.PlayerAction, error)
 	}
 
 	return poker.PlayerAction{
-		PlayerID: clientMessage.clientID,
+		PlayerID: clientMessage.client.id,
 		Action:   action,
 		Amount:   amount,
 	}, nil

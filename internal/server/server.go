@@ -55,11 +55,27 @@ func (server *Server) Run() {
 func handleActions(actionChannel chan ClientMessage) {
 	for clientMessage := range actionChannel {
 		playerAction, err := parseClientMessage(clientMessage)
+
+		var response string
+
 		if err != nil {
-			fmt.Println("Error handling Player Actions:", err)
-			continue
+			response = fmt.Sprintf("Invalid action: %s\n", err)
+		} else if playerAction.Amount > 0 {
+			response = fmt.Sprintf(
+				"Action received: %s $%d\n",
+				playerAction.Action.String(),
+				playerAction.Amount,
+			)
+		} else {
+			response = fmt.Sprintf(
+				"Action received: %s\n",
+				playerAction.Action.String(),
+			)
 		}
 
-		fmt.Printf("Player action: %+v\n", playerAction.Action.String())
+		err = sendClientResponse(clientMessage.client, response)
+		if err != nil {
+			fmt.Println("Error sending client response:", err)
+		}
 	}
 }
