@@ -10,6 +10,23 @@ func my_timestamp() string {
 	return time.Now().Format(time.TimeOnly)
 }
 
+func logClientConnected(client *Client) {
+	fmt.Printf(
+		"[%s] Client %d connected: %s\n",
+		my_timestamp(),
+		client.id,
+		client.connection.RemoteAddr(),
+	)
+}
+
+func logClientDisconnected(client *Client) {
+	fmt.Printf(
+		"[%s] Client %d disconnected\n",
+		time.Now().Format(time.TimeOnly),
+		client.id,
+	)
+}
+
 func logClientError(client *Client, message string, err error) {
 	fmt.Printf(
 		"[%s] Client %d - %s: %v\n",

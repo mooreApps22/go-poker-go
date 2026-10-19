@@ -2,9 +2,7 @@ package server
 
 import (
 	"bufio"
-	"fmt"
 	"net"
-	"time"
 )
 
 type Client struct {
@@ -24,7 +22,7 @@ func NewClient(id int, connection net.Conn) *Client {
 	}
 }
 
-func handleClientConnection(client *Client, actionChannel chan ClientMessage) {
+func receiveClientMessages(client *Client, actionChannel chan ClientMessage) {
 	defer client.connection.Close()
 
 	reader := bufio.NewReader(client.connection)
@@ -32,11 +30,7 @@ func handleClientConnection(client *Client, actionChannel chan ClientMessage) {
 	for {
 		message, err := reader.ReadString('\n')
 		if err != nil {
-			fmt.Printf(
-				"[%s] Client %d disconnected\n",
-				time.Now().Format(time.TimeOnly),
-				client.id,
-			)
+			logClientDisconnected(client)
 			return
 		}
 
@@ -47,11 +41,26 @@ func handleClientConnection(client *Client, actionChannel chan ClientMessage) {
 	}
 }
 
-func sendClientResponse(client *Client, response string) error {
-	_, err := client.connection.Write([]byte(response))
-	if err != nil {
-		fmt.Printf("Error writing to connection: %v\n", err)
-		return err
+func processClientMessages(actionChannel chan ClientMessage) {
+	for clientMessage := range actionChannel {
+		playerAction, parseErr := parseClientMessage(clientMessage)
+
+		response := buildActionResponse(playerAction, parseErr)
+
+		sendErr := sendClientResponse(clientMessage.client, response)
+		if sendErr != nil {
+			logClientError(
+				clientMessage.client,
+				"Error sending client response:",
+				sendErr,
+			)
+			continue
+		}
+
+		logPlayerAction(
+			clientMessage.client,
+			playerAction,
+			parseErr,
+		)
 	}
-	return nil
 }
