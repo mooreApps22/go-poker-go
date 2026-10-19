@@ -23,7 +23,7 @@ func NewClient(id int, connection net.Conn) *Client {
 	}
 }
 
-func handleClient(client *Client, actionChannel chan ClientMessage) {
+func handleClientConnection(client *Client, actionChannel chan ClientMessage) {
 	defer client.connection.Close()
 
 	reader := bufio.NewReader(client.connection)

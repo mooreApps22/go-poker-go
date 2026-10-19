@@ -33,7 +33,7 @@ func createListener(port int) (net.Listener, error) {
 
 func (server *Server) Run() {
 
-	nextClientID := 1
+	server.nextClientID = 1
 
 	go handleActions(server.actionChannel)
 
@@ -43,12 +43,12 @@ func (server *Server) Run() {
 			fmt.Println("Error accepting connection:", err)
 			continue
 		}
-		client := NewClient(nextClientID, connection)
-		nextClientID++
+		client := NewClient(server.nextClientID, connection)
+		server.nextClientID++
 
 		fmt.Println("Client connected:", connection.RemoteAddr())
 
-		go handleClient(client, server.actionChannel)
+		go handleClientConnection(client, server.actionChannel)
 	}
 }
 
