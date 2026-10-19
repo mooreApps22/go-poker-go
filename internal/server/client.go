@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"net"
+	"time"
 )
 
 type Client struct {
@@ -31,7 +32,11 @@ func handleClientConnection(client *Client, actionChannel chan ClientMessage) {
 	for {
 		message, err := reader.ReadString('\n')
 		if err != nil {
-			fmt.Println("Client disconnected:", client.id)
+			fmt.Printf(
+				"[%s] Client %d disconnected\n",
+				time.Now().Format(time.TimeOnly),
+				client.id,
+			)
 			return
 		}
 

@@ -37,7 +37,7 @@ func readServerMessages(connection net.Conn) {
 			return
 		}
 
-		fmt.Print("Server: ", response)
+		fmt.Print("Server - ", response)
 	}
 }
 

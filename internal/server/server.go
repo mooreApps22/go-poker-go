@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"net"
+	"time"
 )
 
 type Server struct {
@@ -46,7 +47,12 @@ func (server *Server) Run() {
 		client := NewClient(server.nextClientID, connection)
 		server.nextClientID++
 
-		fmt.Println("Client connected:", connection.RemoteAddr())
+		fmt.Printf(
+			"[%s] Client %d connected: %s\n",
+			time.Now().Format(time.TimeOnly),
+			client.id,
+			connection.RemoteAddr(),
+		)
 
 		go handleClientConnection(client, server.actionChannel)
 	}
@@ -54,12 +60,12 @@ func (server *Server) Run() {
 
 func handleActions(actionChannel chan ClientMessage) {
 	for clientMessage := range actionChannel {
-		playerAction, err := parseClientMessage(clientMessage)
+		playerAction, parseErr := parseClientMessage(clientMessage)
 
 		var response string
 
-		if err != nil {
-			response = fmt.Sprintf("Invalid action: %s\n", err)
+		if parseErr != nil {
+			response = fmt.Sprintf("Invalid action: %s\n", parseErr)
 		} else if playerAction.Amount > 0 {
 			response = fmt.Sprintf(
 				"Action received: %s $%d\n",
@@ -73,14 +79,27 @@ func handleActions(actionChannel chan ClientMessage) {
 			)
 		}
 
-		err = sendClientResponse(clientMessage.client, response)
-		if err != nil {
-			fmt.Println("Error sending client response:", err)
+		sendErr := sendClientResponse(clientMessage.client, response)
+		if sendErr != nil {
+			fmt.Println("Error sending client response:", sendErr)
 		}
 		fmt.Printf(
-			"Client %d: %s\n",
+			"Client %d: %s",
 			clientMessage.client.id,
 			playerAction.Action.String(),
 		)
+		if playerAction.Amount > 0 {
+			fmt.Printf(
+				" %d ",
+				playerAction.Amount,
+			)
+		}
+		if parseErr != nil {
+			fmt.Printf(
+				" Error: %s",
+				parseErr,
+			)
+		}
+		fmt.Printf("\n")
 	}
 }
