@@ -77,5 +77,10 @@ func handleActions(actionChannel chan ClientMessage) {
 		if err != nil {
 			fmt.Println("Error sending client response:", err)
 		}
+		fmt.Printf(
+			"Client %d: %s\n",
+			clientMessage.client.id,
+			playerAction.Action.String(),
+		)
 	}
 }
