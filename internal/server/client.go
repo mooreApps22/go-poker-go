@@ -22,7 +22,7 @@ func NewClient(id int, connection net.Conn) *Client {
 	}
 }
 
-func (server *Server) receiveClientMessages(client *Client, actionChannel chan ClientMessage) {
+func (server *Server) receiveClientMessages(client *Client, clientMessageChannel chan ClientMessage) {
 	defer client.connection.Close()
 
 	reader := bufio.NewReader(client.connection)
@@ -34,33 +34,44 @@ func (server *Server) receiveClientMessages(client *Client, actionChannel chan C
 			return
 		}
 
-		actionChannel <- ClientMessage{
+		clientMessageChannel <- ClientMessage{
 			client:  client,
 			message: message,
 		}
 	}
 }
 
-func (server *Server) processClientMessages(actionChannel chan ClientMessage) {
-	for clientMessage := range actionChannel {
-		playerAction, parseErr := parseClientMessage(clientMessage)
-
-		response := buildActionResponse(playerAction, parseErr)
-
-		sendErr := sendClientResponse(clientMessage.client, response)
-		if sendErr != nil {
-			logClientError(
-				clientMessage.client,
-				"Error sending client response:",
-				sendErr,
-			)
-			continue
+func (server *Server) processClientMessages(clientMessageChannel chan ClientMessage) {
+	for clientMessage := range clientMessageChannel {
+		if server.gameHost.Started() {
+			server.processPokerClientMessage(clientMessage)
+		} else {
+			server.processLobbyClientMessage(clientMessage)
 		}
-
-		logPlayerAction(
-			clientMessage.client,
-			playerAction,
-			parseErr,
-		)
 	}
+}
+
+func (server *Server) processPokerClientMessage(clientMessage ClientMessage) {
+	playerAction, parseErr := parsePokerClientMessage(clientMessage)
+
+	response := buildActionResponse(playerAction, parseErr)
+
+	sendErr := sendClientResponse(clientMessage.client, response)
+	if sendErr != nil {
+		logClientError(
+			clientMessage.client,
+			"Error sending client response:",
+			sendErr,
+		)
+		return
+	}
+
+	logPlayerAction(
+		clientMessage.client,
+		playerAction,
+		parseErr,
+	)
+}
+
+func (server *Server) processLobbyClientMessage(clientMessage ClientMessage) {
 }

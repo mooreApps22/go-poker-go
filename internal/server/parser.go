@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func parseClientMessage(clientMessage ClientMessage) (poker.PlayerAction, error) {
+func parsePokerClientMessage(clientMessage ClientMessage) (poker.PlayerAction, error) {
 	fields := strings.Fields(clientMessage.message)
 	if len(fields) == 0 {
 		return poker.PlayerAction{}, errors.New("empty player action")

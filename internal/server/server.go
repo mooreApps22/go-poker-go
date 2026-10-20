@@ -7,10 +7,10 @@ import (
 )
 
 type Server struct {
-	listener      net.Listener
-	actionChannel chan ClientMessage
-	nextClientID  int
-	gameHost      *host.Host
+	listener             net.Listener
+	clientMessageChannel chan ClientMessage
+	nextClientID         int
+	gameHost             *host.Host
 }
 
 func NewServer(port int, gameHost *host.Host) (Server, error) {
@@ -25,10 +25,10 @@ func NewServer(port int, gameHost *host.Host) (Server, error) {
 	}
 
 	return Server{
-		listener:      listener,
-		actionChannel: make(chan ClientMessage),
-		nextClientID:  1,
-		gameHost:      gameHost,
+		listener:             listener,
+		clientMessageChannel: make(chan ClientMessage),
+		nextClientID:         1,
+		gameHost:             gameHost,
 	}, nil
 }
 
@@ -42,7 +42,7 @@ func (server *Server) Run() {
 
 	server.nextClientID = 1
 
-	go server.processClientMessages(server.actionChannel)
+	go server.processClientMessages(server.clientMessageChannel)
 
 	for {
 		connection, err := server.listener.Accept()
@@ -72,6 +72,6 @@ func (server *Server) Run() {
 
 		//server.receiveClientMessages(client)
 
-		go server.receiveClientMessages(client, server.actionChannel)
+		go server.receiveClientMessages(client, server.clientMessageChannel)
 	}
 }
