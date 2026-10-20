@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"github.com/mooreApps22/go-poker-go/internal/host"
 	"net"
 )
 
@@ -9,9 +10,10 @@ type Server struct {
 	listener      net.Listener
 	actionChannel chan ClientMessage
 	nextClientID  int
+	gameHost      *host.Host
 }
 
-func NewServer(port int) (Server, error) {
+func NewServer(port int, gameHost *host.Host) (Server, error) {
 	listener, err := createListener(port)
 	if err != nil {
 		fmt.Printf(
@@ -26,6 +28,7 @@ func NewServer(port int) (Server, error) {
 		listener:      listener,
 		actionChannel: make(chan ClientMessage),
 		nextClientID:  1,
+		gameHost:      gameHost,
 	}, nil
 }
 
@@ -39,7 +42,7 @@ func (server *Server) Run() {
 
 	server.nextClientID = 1
 
-	go processClientMessages(server.actionChannel)
+	go server.processClientMessages(server.actionChannel)
 
 	for {
 		connection, err := server.listener.Accept()
@@ -56,6 +59,19 @@ func (server *Server) Run() {
 
 		logClientConnected(client)
 
-		go receiveClientMessages(client, server.actionChannel)
+		response := server.gameHost.ClientJoined(client.id)
+		sendErr := sendClientResponse(client, response)
+		if sendErr != nil {
+			logClientError(
+				client,
+				"Error at host prompting player name",
+				sendErr,
+			)
+			continue
+		}
+
+		//server.receiveClientMessages(client)
+
+		go server.receiveClientMessages(client, server.actionChannel)
 	}
 }

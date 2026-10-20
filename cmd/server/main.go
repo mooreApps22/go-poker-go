@@ -4,12 +4,15 @@ import (
 	"fmt"
 
 	//	"github.com/mooreApps22/go-poker-go/internal/poker"
+	"github.com/mooreApps22/go-poker-go/internal/host"
 	"github.com/mooreApps22/go-poker-go/internal/server"
 )
 
 func main() {
 
-	pokerServer, err := server.NewServer(8080)
+	gameHost := host.NewHost()
+
+	pokerServer, err := server.NewServer(8080, &gameHost)
 	if err != nil {
 		fmt.Println("Error creating server:", err)
 		return

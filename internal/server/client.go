@@ -22,7 +22,7 @@ func NewClient(id int, connection net.Conn) *Client {
 	}
 }
 
-func receiveClientMessages(client *Client, actionChannel chan ClientMessage) {
+func (server *Server) receiveClientMessages(client *Client, actionChannel chan ClientMessage) {
 	defer client.connection.Close()
 
 	reader := bufio.NewReader(client.connection)
@@ -41,7 +41,7 @@ func receiveClientMessages(client *Client, actionChannel chan ClientMessage) {
 	}
 }
 
-func processClientMessages(actionChannel chan ClientMessage) {
+func (server *Server) processClientMessages(actionChannel chan ClientMessage) {
 	for clientMessage := range actionChannel {
 		playerAction, parseErr := parseClientMessage(clientMessage)
 
