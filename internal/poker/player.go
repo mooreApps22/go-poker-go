@@ -77,3 +77,7 @@ func (player *Player) ResetForNewHand() {
 	player.hasFolded = false
 	player.hasAllIn = false
 }
+
+func (player Player) GetID() int {
+	return player.id
+}

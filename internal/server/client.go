@@ -2,7 +2,11 @@ package server
 
 import (
 	"bufio"
+	"fmt"
 	"net"
+	"strconv"
+	"strings"
+	// "github.com/mooreApps22/go-poker-go/internal/poker"
 )
 
 type Client struct {
@@ -74,4 +78,76 @@ func (server *Server) processPokerClientMessage(clientMessage ClientMessage) {
 }
 
 func (server *Server) processLobbyClientMessage(clientMessage ClientMessage) {
+	if !server.gameHost.ClientHasPlayer(clientMessage.client.id) {
+		name := strings.TrimSpace(clientMessage.message)
+
+		response := server.gameHost.RegisterPlayer(
+			clientMessage.client.id,
+			name,
+		)
+		sendErr := sendClientResponse(clientMessage.client, response)
+		if sendErr != nil {
+			logClientError(
+				clientMessage.client,
+				"Error sending lobby response",
+				sendErr,
+			)
+		}
+		return
+	}
+
+	currentPlayer := server.gameHost.GetPlayer(clientMessage.client.id)
+	if currentPlayer == nil {
+
+		return
+	}
+
+	if server.gameHost.IsLobbyOwner(currentPlayer) {
+		if server.gameHost.GetExpectedNumberOfPlayers() == 0 {
+			number, err := strconv.Atoi(strings.TrimSpace(clientMessage.message))
+			if err != nil {
+				sendErr := sendClientResponse(
+					clientMessage.client,
+					"Expected a number.\n",
+				)
+				if sendErr != nil {
+					logClientError(
+						clientMessage.client,
+						"Error sending lobby response",
+						sendErr,
+					)
+				}
+				return
+			}
+
+			if !server.gameHost.SetExpectedNumberOfPlayers(number) {
+				sendErr := sendClientResponse(
+					clientMessage.client,
+					"Number can't be under 4 or over 10.\n",
+				)
+				if sendErr != nil {
+					logClientError(
+						clientMessage.client,
+						"Error sending lobby response",
+						sendErr,
+					)
+				}
+				return
+			}
+
+			sendErr := sendClientResponse(
+				clientMessage.client,
+				fmt.Sprintf("Waiting for %d players.\n", number),
+			)
+			if sendErr != nil {
+				logClientError(
+					clientMessage.client,
+					"Error sending lobby response",
+					sendErr,
+				)
+			}
+			return
+		}
+	}
+
 }

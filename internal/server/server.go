@@ -40,8 +40,6 @@ func createListener(port int) (net.Listener, error) {
 
 func (server *Server) Run() {
 
-	server.nextClientID = 1
-
 	go server.processClientMessages(server.clientMessageChannel)
 
 	for {
@@ -49,7 +47,7 @@ func (server *Server) Run() {
 		if err != nil {
 			logClientError(
 				nil,
-				"Error creating listener",
+				"Error accepting connection",
 				err,
 			)
 			continue
@@ -67,10 +65,9 @@ func (server *Server) Run() {
 				"Error at host prompting player name",
 				sendErr,
 			)
+			client.connection.Close()
 			continue
 		}
-
-		//server.receiveClientMessages(client)
 
 		go server.receiveClientMessages(client, server.clientMessageChannel)
 	}
