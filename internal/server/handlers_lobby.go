@@ -67,3 +67,23 @@ func (server *Server) handleExpectedNumberOfPlayers(clientMessage ClientMessage)
 		)
 	}
 }
+
+func (server *Server) handleStartGame(clientMessage ClientMessage) {
+	if !server.gameHost.CanStartGame() {
+		// send message: not enough players yet
+		sendErr := sendClientResponse(
+			clientMessage.client,
+			"Waiting for at least four players.\n",
+		)
+		if sendErr != nil {
+			logClientError(
+				clientMessage.client,
+				"Error sending lobby response",
+				sendErr,
+			)
+		}
+		return
+	}
+
+	server.gameHost.SetStartGame()
+}

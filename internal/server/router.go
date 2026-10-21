@@ -1,6 +1,8 @@
 package server
 
 import (
+	"strings"
+
 	"github.com/mooreApps22/go-poker-go/internal/poker"
 )
 
@@ -46,4 +48,17 @@ func (server *Server) routeLobbyClientMessage(clientMessage ClientMessage) {
 		return
 	}
 
+	if server.gameHost.IsLobbyOwner(currentPlayer) {
+		command := strings.ToUpper(strings.TrimSpace(clientMessage.message))
+
+		switch command {
+		case "START":
+			server.handleStartGame(clientMessage)
+			return
+		}
+	}
+
+	if server.gameHost.AutomaticStartPossible() {
+		server.handleStartGame(clientMessage)
+	}
 }

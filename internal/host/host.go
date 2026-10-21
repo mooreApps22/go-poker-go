@@ -87,3 +87,15 @@ func (host *Host) SetExpectedNumberOfPlayers(number int) bool {
 	host.expectedNumberOfPlayers = number
 	return true
 }
+
+func (host *Host) CanStartGame() bool {
+	return len(host.players) >= 4
+}
+
+func (host *Host) SetStartGame() {
+	host.started = true
+}
+
+func (host *Host) AutomaticStartPossible() bool {
+	return len(host.players) == host.expectedNumberOfPlayers
+}
