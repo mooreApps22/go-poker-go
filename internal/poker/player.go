@@ -81,3 +81,7 @@ func (player *Player) ResetForNewHand() {
 func (player Player) GetID() int {
 	return player.id
 }
+
+func (player Player) GetChips() int64 {
+	return player.chips
+}

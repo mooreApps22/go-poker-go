@@ -1,6 +1,8 @@
 package server
 
-import ()
+import (
+	"github.com/mooreApps22/go-poker-go/internal/poker"
+)
 
 func (server *Server) routeClientMessages(clientMessageChannel chan ClientMessage) {
 	for clientMessage := range clientMessageChannel {
@@ -14,24 +16,17 @@ func (server *Server) routeClientMessages(clientMessageChannel chan ClientMessag
 
 func (server *Server) routePokerClientMessage(clientMessage ClientMessage) {
 	playerAction, parseErr := parsePokerClientMessage(clientMessage)
-
-	response := buildActionResponse(playerAction, parseErr)
-
-	sendErr := sendClientResponse(clientMessage.client, response)
-	if sendErr != nil {
-		logClientError(
-			clientMessage.client,
-			"Error sending client response:",
-			sendErr,
-		)
+	if parseErr != nil {
+		server.handleInvalidPokerAction(clientMessage, parseErr)
 		return
 	}
 
-	logPlayerAction(
-		clientMessage.client,
-		playerAction,
-		parseErr,
-	)
+	switch playerAction.Action {
+	case poker.Chips:
+		server.handleChipRequest(clientMessage, playerAction)
+	default:
+		server.handlePlayerAction(clientMessage, playerAction)
+	}
 }
 
 func (server *Server) routeLobbyClientMessage(clientMessage ClientMessage) {

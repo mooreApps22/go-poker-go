@@ -40,13 +40,7 @@ func logClientError(client *Client, message string, err error) {
 func logPlayerAction(
 	client *Client,
 	playerAction poker.PlayerAction,
-	parseErr error,
 ) {
-	if parseErr != nil {
-		logClientError(client, "parse action", parseErr)
-		return
-	}
-
 	if playerAction.Amount > 0 {
 		fmt.Printf(
 			"Client %d: %s $%d\n",
