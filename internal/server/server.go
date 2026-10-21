@@ -40,7 +40,7 @@ func createListener(port int) (net.Listener, error) {
 
 func (server *Server) Run() {
 
-	go server.processClientMessages(server.clientMessageChannel)
+	go server.routeClientMessages(server.clientMessageChannel)
 
 	for {
 		connection, err := server.listener.Accept()
