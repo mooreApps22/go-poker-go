@@ -48,6 +48,10 @@ func (server *Server) routeLobbyClientMessage(clientMessage ClientMessage) {
 		return
 	}
 
+	if server.gameHost.AutomaticStartPossible() {
+		server.handleStartGame(clientMessage)
+	}
+
 	if server.gameHost.IsLobbyOwner(currentPlayer) {
 		command := strings.ToUpper(strings.TrimSpace(clientMessage.message))
 
@@ -58,7 +62,4 @@ func (server *Server) routeLobbyClientMessage(clientMessage ClientMessage) {
 		}
 	}
 
-	if server.gameHost.AutomaticStartPossible() {
-		server.handleStartGame(clientMessage)
-	}
 }

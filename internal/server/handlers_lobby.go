@@ -86,4 +86,15 @@ func (server *Server) handleStartGame(clientMessage ClientMessage) {
 	}
 
 	server.gameHost.SetStartGame()
+	sendErr := sendClientResponse(
+		clientMessage.client,
+		"Start Game.\n",
+	)
+	if sendErr != nil {
+		logClientError(
+			clientMessage.client,
+			"Error sending lobby response",
+			sendErr,
+		)
+	}
 }
