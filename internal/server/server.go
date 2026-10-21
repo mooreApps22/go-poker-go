@@ -11,6 +11,7 @@ type Server struct {
 	clientMessageChannel chan ClientMessage
 	nextClientID         int
 	gameHost             *host.Host
+	clients              []*Client
 }
 
 func NewServer(port int, gameHost *host.Host) (Server, error) {
@@ -29,6 +30,7 @@ func NewServer(port int, gameHost *host.Host) (Server, error) {
 		clientMessageChannel: make(chan ClientMessage),
 		nextClientID:         1,
 		gameHost:             gameHost,
+		clients:              nil,
 	}, nil
 }
 
@@ -56,6 +58,7 @@ func (server *Server) Run() {
 		server.nextClientID++
 
 		logClientConnected(client)
+		server.clients = append(server.clients, client)
 
 		response := server.gameHost.ClientJoined(client.id)
 		sendErr := sendClientResponse(client, response)

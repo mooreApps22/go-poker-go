@@ -12,3 +12,16 @@ func sendClientResponse(client *Client, response string) error {
 	}
 	return nil
 }
+
+func (server *Server) broadcast(message string) {
+	for _, client := range server.clients {
+		sendErr := sendClientResponse(client, message)
+		if sendErr != nil {
+			logClientError(
+				client,
+				"Error broadcasting response",
+				sendErr,
+			)
+		}
+	}
+}
