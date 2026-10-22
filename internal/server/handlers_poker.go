@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+
 	"github.com/mooreApps22/go-poker-go/internal/poker"
 )
 
@@ -59,6 +60,25 @@ func (server *Server) handlePlayerAction(
 	clientMessage ClientMessage,
 	playerAction poker.PlayerAction,
 ) {
+
+	hand := server.gameHost.GetHand()
+
+	err := hand.ApplyPlayerAction(playerAction)
+	if err != nil {
+		sendErr := sendClientResponse(
+			clientMessage.client,
+			err.Error()+"\n",
+		)
+		if sendErr != nil {
+			logClientError(
+				clientMessage.client,
+				"Error sending player action error",
+				sendErr,
+			)
+		}
+		return
+	}
+
 	switch playerAction.Action {
 	case poker.Fold:
 		server.handleFold(clientMessage, playerAction)
@@ -104,12 +124,12 @@ func (server *Server) handleCall(
 	clientMessage ClientMessage,
 	playerAction poker.PlayerAction,
 ) {
-	//placeholder logic
-	sendPlayerAction(
-		clientMessage,
-		"You have selected to Call.\n",
-		playerAction,
-	)
+	player := server.gameHost.GetPlayer(playerAction.PlayerID)
+
+	server.broadcast(fmt.Sprintf(
+		"%s called.\n",
+		player.GetName(),
+	))
 }
 
 func (server *Server) handleBet(

@@ -16,7 +16,7 @@ func (server *Server) startNextHand() {
 	dealer := hand.GetDealer()
 	smallBlind := hand.GetSmallBlindPlayer()
 	bigBlind := hand.GetBigBlindPlayer()
-	currentPlayer := hand.GetUTGPlayer()
+	currentPlayer := hand.GetCurrentPlayer()
 
 	server.broadcast("The table is ready for the NEXT HAND.\n")
 	server.broadcast("The deck has been shuffled.\n")
@@ -36,11 +36,13 @@ func (server *Server) startNextHand() {
 
 	server.broadcast("The hole card have been dealt.\n")
 
+	// privately send hole cards
+	server.broadcast("These are your hole cards:\n")
+	server.sendPrivateHoleCards()
+
+	// tell everyone whose turn it is
 	server.broadcast(fmt.Sprintf(
 		"It's %s's turn.\n",
 		currentPlayer.GetName(),
 	))
-
-	// privately send hole cards
-	// tell everyone whose turn it is
 }

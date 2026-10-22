@@ -24,17 +24,8 @@ func main() {
 	/*
 
 		for {
-			game.RotateDealer()
-			game.SetUpNewHand()
-			hand := game.GetHand()
-
 			// PRE-FLOP PHASE
 			fmt.Println("Blind bets posted:")
-			hand.ResetPlayersForNewHand()
-			hand.PostBlinds()
-			for _, player := range hand.GetPlayers() {
-				fmt.Printf("%v's Current Bet: %v\n", player.GetName(), player.GetCurrentBet())
-			}
 
 			err := hand.DealHoleCards()
 			if err != nil {

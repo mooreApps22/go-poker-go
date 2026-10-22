@@ -1,10 +1,11 @@
 package poker
 
 import (
+	"errors"
 	"fmt"
-	"strings"
 )
 
+/*
 func (hand *Hand) AcceptBets() {
 	if hand.IsOver() {
 		return
@@ -42,6 +43,7 @@ func (hand *Hand) AcceptBets() {
 		player.hasActed = false
 	}
 }
+*/
 
 func (hand *Hand) bettingRoundComplete() bool {
 	for _, player := range hand.players {
@@ -58,11 +60,11 @@ func (hand *Hand) bettingRoundComplete() bool {
 func (hand *Hand) displayPlayerActions(player *Player) {
 	if len(hand.GetCommunityCardsDealt()) > 0 {
 		fmt.Println("Community Cards Dealt:")
-		fmt.Println(FormatCards(hand.GetCommunityCardsDealt()))
+		fmt.Println(FormatPublicCards(hand.GetCommunityCardsDealt()))
 	}
 	if len(player.holeCards) > 0 {
 		fmt.Printf("%v's Hole Cards:\n", player.name)
-		fmt.Println(FormatCards(player.GetHoleCards()))
+		fmt.Println(FormatPublicCards(player.GetHoleCards()))
 	}
 	fmt.Println("Current Pot: $", hand.GetCurrentPotValue())
 	fmt.Printf("%v's Turn:\n", player.name)
@@ -84,6 +86,7 @@ func (hand *Hand) displayPlayerActions(player *Player) {
 	fmt.Println("[P] Chips")
 }
 
+/*
 func (hand *Hand) handlePlayerInput(player *Player) {
 	for {
 		hand.displayPlayerActions(player)
@@ -128,108 +131,93 @@ func (hand *Hand) handlePlayerInput(player *Player) {
 		}
 	}
 }
+*/
 
-func (hand *Hand) call(player *Player) bool {
+func (hand *Hand) call(player *Player) error {
 	amountToCall := hand.currentCall - player.currentBet
 
 	if amountToCall <= 0 {
-		fmt.Println("There is nothing to call.")
-		return false
+		return errors.New("there is nothing to call")
 	}
 
 	if amountToCall >= player.chips {
-		fmt.Println("You cannot call more than $", player.chips)
-		fmt.Println("You have chosen to go ALL IN with $", player.chips)
 		player.PlaceBet(player.chips)
 		player.hasAllIn = true
 		player.hasActed = true
-		return true
+		return nil
 	}
 
 	player.PlaceBet(amountToCall)
 	player.hasActed = true
-	return true
+	return nil
 }
 
-func (hand *Hand) bet(player *Player) bool {
-	for {
-		fmt.Print("Enter the amount of your bet: ")
-
-		var betAmount int64
-		_, err := fmt.Scan(&betAmount)
-		if err != nil {
-			fmt.Println("Invalid bet amount")
-			continue
-		}
-
-		if hand.currentCall != 0 {
-			fmt.Println("There is already a bet. You must call or raise.")
-			continue
-		}
-
-		if betAmount <= 0 {
-			fmt.Println("Your bet must be greater than zero.")
-			continue
-		}
-
-		if betAmount < hand.minimumBet {
-			fmt.Printf("Your bet must be at least %v.\n", hand.minimumBet)
-			continue
-		}
-
-		if betAmount > player.chips {
-			fmt.Println("You cannot bet more than $", player.chips)
-			continue
-		}
-
-		player.PlaceBet(betAmount)
-		hand.currentCall = betAmount
-
-		for _, player := range hand.players {
-			player.hasActed = false
-		}
-		player.hasActed = true
-
-		return true
+func (hand *Hand) bet(player *Player, betAmount int64) error {
+	if hand.currentCall != 0 {
+		return errors.New("there is already a bet; You must call or raise")
 	}
+
+	if betAmount <= 0 {
+		return errors.New("Your bet must be greater than zero.")
+	}
+
+	if betAmount < hand.minimumBet {
+		return fmt.Errorf(
+			"your bet must be at least %d",
+			hand.minimumBet,
+		)
+	}
+
+	if betAmount > player.chips {
+		return fmt.Errorf(
+			"you cannot bet more than $%d",
+			player.chips,
+		)
+	}
+
+	player.PlaceBet(betAmount)
+	hand.currentCall = betAmount
+
+	for _, currentPlayer := range hand.players {
+		currentPlayer.hasActed = false
+	}
+
+	player.hasActed = true
+
+	return nil
 }
 
-func (hand *Hand) raise(player *Player) bool {
-	for {
-		fmt.Print("Enter the amount of your raise: ")
-
-		var raiseAmount int64
-		_, err := fmt.Scan(&raiseAmount)
-		if err != nil {
-			fmt.Println("Invalid bet amount")
-			continue
-		}
-
-		if raiseAmount > player.chips {
-			fmt.Println("You cannot raise more than $", player.chips)
-			continue
-		}
-
-		if raiseAmount <= hand.currentCall {
-			fmt.Println("Your raise must be greater than the current call.")
-			continue
-		}
-
-		if raiseAmount-hand.currentCall < hand.minimumBet {
-			fmt.Printf("Your raise must be at least %v greater than the current call.\n", hand.minimumBet)
-			continue
-		}
-		amountToRaise := raiseAmount - player.currentBet
-
-		//hand.pot.BuildBet(amountToRaise, player)
-		player.PlaceBet(amountToRaise)
-		hand.currentCall = raiseAmount
-		for _, player := range hand.players {
-			player.hasActed = false
-		}
-		player.hasActed = true
-		return true
+func (hand *Hand) raise(player *Player, raiseAmount int64) error {
+	if raiseAmount > player.chips {
+		return fmt.Errorf(
+			"you cannot raise more than $%d",
+			player.chips,
+		)
 	}
+
+	if raiseAmount <= hand.currentCall {
+		return errors.New("your raise must be greater than the current call")
+	}
+
+	if raiseAmount-hand.currentCall < hand.minimumBet {
+		return fmt.Errorf(
+			"your raise must be at least %v greater than the current call",
+			hand.minimumBet,
+		)
+	}
+
+	amountToRaise := raiseAmount - player.currentBet
+
+	player.PlaceBet(amountToRaise)
+	hand.currentCall = raiseAmount
+
+	for _, currentPlayer := range hand.players {
+		currentPlayer.hasActed = false
+	}
+
+	player.hasActed = true
+
+	return nil
 }
 
 func (hand *Hand) fold(player *Player) {

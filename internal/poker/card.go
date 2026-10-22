@@ -115,7 +115,7 @@ func (card Card) PrettyCardString() string {
 }
 
 // Packet Function because no receiver
-func FormatCards(cards []Card) string {
+func FormatPrivateCards(cards []Card) string {
 	result := ""
 	for row := 0; row < 4; row++ {
 		for _, card := range cards {
@@ -126,6 +126,19 @@ func FormatCards(cards []Card) string {
 		if row < 3 {
 			result += "\n"
 		}
+	}
+	return result
+}
+
+func FormatPublicCards(cards []Card) string {
+	result := ""
+	for row := 0; row < 4; row++ {
+		for _, card := range cards {
+			result += card.PrettyRow(row)
+			result += " "
+		}
+
+		result += "\n"
 	}
 	return result
 }
