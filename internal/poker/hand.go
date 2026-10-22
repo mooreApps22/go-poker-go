@@ -88,6 +88,10 @@ func (hand *Hand) GetBigBlindPlayer() *Player {
 	return hand.players[hand.bigBlindIndex]
 }
 
+func (hand *Hand) GetUTGPlayer() *Player {
+	return hand.players[hand.utgIndex]
+}
+
 func (hand *Hand) GetCurrentPlayer() *Player {
 	return hand.players[hand.currentPlayerIndex]
 }

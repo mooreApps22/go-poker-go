@@ -16,20 +16,20 @@ func (server *Server) startNextHand() {
 	dealer := hand.GetDealer()
 	smallBlind := hand.GetSmallBlindPlayer()
 	bigBlind := hand.GetBigBlindPlayer()
-	currentPlayer := hand.GetCurrentPlayer()
+	currentPlayer := hand.GetUTGPlayer()
 
 	server.broadcast("The table is ready for the NEXT HAND.\n")
 	server.broadcast("The deck has been shuffled.\n")
 
-	server.broadcast(fmt.Sprintf("%s is the dealer", dealer.GetName()))
+	server.broadcast(fmt.Sprintf("%s is the dealer.\n", dealer.GetName()))
 
 	server.broadcast(fmt.Sprintf(
-		"%s posted the small blind: $%d",
+		"%s posted the small blind: $%d.\n",
 		smallBlind.GetName(),
 		poker.SmallBlindBet,
 	))
 	server.broadcast(fmt.Sprintf(
-		"%s posted the big blind: $%d",
+		"%s posted the big blind: $%d.\n",
 		bigBlind.GetName(),
 		poker.BigBlindBet,
 	))
