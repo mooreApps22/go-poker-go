@@ -50,3 +50,7 @@ func (game *Game) GetHand() *Hand {
 func (game *Game) RotateDealer() {
 	game.dealerIndex = (game.dealerIndex + 1) % len(game.players)
 }
+
+func (game *Game) GetDealerIndex() int {
+	return game.dealerIndex
+}

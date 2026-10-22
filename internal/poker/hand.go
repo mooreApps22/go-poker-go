@@ -75,3 +75,19 @@ func (hand *Hand) ResetPlayersForNewHand() {
 		player.ResetForNewHand()
 	}
 }
+
+func (hand *Hand) GetDealer() *Player {
+	return hand.players[hand.dealerIndex]
+}
+
+func (hand *Hand) GetSmallBlindPlayer() *Player {
+	return hand.players[hand.smallBlindIndex]
+}
+
+func (hand *Hand) GetBigBlindPlayer() *Player {
+	return hand.players[hand.bigBlindIndex]
+}
+
+func (hand *Hand) GetCurrentPlayer() *Player {
+	return hand.players[hand.currentPlayerIndex]
+}

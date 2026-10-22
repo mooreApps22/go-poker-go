@@ -103,3 +103,11 @@ func (host *Host) StartGame() bool {
 func (host *Host) AutomaticStartPossible() bool {
 	return len(host.players) == host.expectedNumberOfPlayers
 }
+
+func (host *Host) GetHand() poker.Hand {
+	return *host.game.GetHand()
+}
+
+func (host *Host) GetGame() poker.Game {
+	return *host.game
+}
