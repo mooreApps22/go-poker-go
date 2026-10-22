@@ -43,7 +43,8 @@ func logPlayerAction(
 ) {
 	if playerAction.Amount > 0 {
 		fmt.Printf(
-			"Client %d: %s $%d\n",
+			"[%s] Client %d: %s $%d\n",
+			my_timestamp(),
 			client.id,
 			playerAction.Action.String(),
 			playerAction.Amount,
@@ -52,7 +53,8 @@ func logPlayerAction(
 	}
 
 	fmt.Printf(
-		"Client %d: %s\n",
+		"[%s] Client %d: %s\n",
+		my_timestamp(),
 		client.id,
 		playerAction.Action.String(),
 	)
