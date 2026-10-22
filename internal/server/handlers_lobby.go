@@ -69,8 +69,7 @@ func (server *Server) handleExpectedNumberOfPlayers(clientMessage ClientMessage)
 }
 
 func (server *Server) handleStartGame(clientMessage ClientMessage) {
-	if !server.gameHost.CanStartGame() {
-		// send message: not enough players yet
+	if !server.gameHost.StartGame() {
 		sendErr := sendClientResponse(
 			clientMessage.client,
 			"Waiting for at least four players.\n",
@@ -85,6 +84,6 @@ func (server *Server) handleStartGame(clientMessage ClientMessage) {
 		return
 	}
 
-	server.gameHost.SetStartGame()
-	server.broadcast("Start game.\n")
+	server.broadcast("A NEW GAME has started.\n")
+	server.startNextHand()
 }

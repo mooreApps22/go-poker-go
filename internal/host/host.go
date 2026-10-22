@@ -23,7 +23,7 @@ type Host struct {
 	started                 bool
 	players                 []*poker.Player
 	lobbyOwner              *poker.Player
-	// game
+	game                    *poker.Game
 }
 
 func NewHost() Host {
@@ -88,12 +88,16 @@ func (host *Host) SetExpectedNumberOfPlayers(number int) bool {
 	return true
 }
 
-func (host *Host) CanStartGame() bool {
-	return len(host.players) >= 4
-}
+func (host *Host) StartGame() bool {
+	if len(host.players) < 4 {
+		return false
+	}
 
-func (host *Host) SetStartGame() {
+	game := poker.NewGame(host.players)
+
+	host.game = &game
 	host.started = true
+	return true
 }
 
 func (host *Host) AutomaticStartPossible() bool {

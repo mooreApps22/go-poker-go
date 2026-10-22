@@ -22,40 +22,9 @@ func main() {
 	pokerServer.Run()
 
 	/*
-		fmt.Println()
-
-		player1 := poker.NewPlayer(1, "Adam")
-		player2 := poker.NewPlayer(2, "Bill")
-		player3 := poker.NewPlayer(3, "Cathy")
-		player4 := poker.NewPlayer(4, "Debra")
-
-		players := []*poker.Player{
-			&player1,
-			&player2,
-			&player3,
-			&player4,
-		}
-
-		game := poker.NewGame(players)
 
 		for {
-			fmt.Println("[N] New Hand")
-			fmt.Println("[Q] Quit")
-			fmt.Print("> ")
-
 			game.RotateDealer()
-			var input string
-			fmt.Scan(&input)
-
-			if input == "q" || input == "Q" {
-				break
-			} else if input == "n" || input == "N" {
-				fmt.Println("Starting new hand...")
-			} else {
-				fmt.Println("Invalid command: ", input)
-				continue
-			}
-
 			game.SetUpNewHand()
 			hand := game.GetHand()
 

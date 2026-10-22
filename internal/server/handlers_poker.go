@@ -21,26 +21,6 @@ func (server *Server) handleInvalidPokerAction(
 	}
 }
 
-/*
-	response := buildActionResponse(playerAction)
-
-	sendErr := sendClientResponse(clientMessage.client, response)
-	if sendErr != nil {
-		logClientError(
-			clientMessage.client,
-			"Error sending client response:",
-			sendErr,
-		)
-		return
-	}
-
-	logPlayerAction(
-		clientMessage.client,
-		playerAction,
-		parseErr,
-	)
-*/
-
 func sendPlayerAction(
 	clientMessage ClientMessage,
 	response string,
