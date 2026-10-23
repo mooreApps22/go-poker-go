@@ -63,7 +63,7 @@ func (server *Server) handlePlayerAction(
 
 	hand := server.gameHost.GetHand()
 
-	err := hand.ApplyPlayerAction(playerAction)
+	bettingRoundComplete, err := hand.ApplyPlayerAction(playerAction)
 	if err != nil {
 		sendErr := sendClientResponse(
 			clientMessage.client,
@@ -92,6 +92,28 @@ func (server *Server) handlePlayerAction(
 		server.handleRaise(clientMessage, playerAction)
 	case poker.AllIn:
 		server.handleAllIn(clientMessage, playerAction)
+	}
+
+	if bettingRoundComplete {
+
+		err := hand.AdvancePhase()
+		if err != nil {
+			// handle error
+			return
+		}
+
+		communityCards := hand.GetCommunityCardsDealt()
+		formattedCommunityCards := poker.FormatPublicCards(communityCards)
+
+		server.broadcast(formattedCommunityCards)
+
+	} else {
+		currentPlayer := hand.GetCurrentPlayer()
+
+		server.broadcast(fmt.Sprintf(
+			"It's %s's turn.\n",
+			currentPlayer.GetName(),
+		))
 	}
 
 }
@@ -130,6 +152,8 @@ func (server *Server) handleCall(
 		"%s called.\n",
 		player.GetName(),
 	))
+
+	logPlayerAction(clientMessage.client, playerAction)
 }
 
 func (server *Server) handleBet(
@@ -142,6 +166,8 @@ func (server *Server) handleBet(
 		"You have selected to Bet.\n",
 		playerAction,
 	)
+
+	logPlayerAction(clientMessage.client, playerAction)
 }
 
 func (server *Server) handleRaise(
@@ -154,6 +180,8 @@ func (server *Server) handleRaise(
 		"You have selected to Raise.\n",
 		playerAction,
 	)
+
+	logPlayerAction(clientMessage.client, playerAction)
 }
 
 func (server *Server) handleAllIn(
@@ -166,4 +194,6 @@ func (server *Server) handleAllIn(
 		"You have selected to go All In.\n",
 		playerAction,
 	)
+
+	logPlayerAction(clientMessage.client, playerAction)
 }

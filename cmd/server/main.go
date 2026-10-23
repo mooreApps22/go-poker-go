@@ -24,16 +24,6 @@ func main() {
 	/*
 
 		for {
-			// PRE-FLOP PHASE
-			fmt.Println("Blind bets posted:")
-
-			err := hand.DealHoleCards()
-			if err != nil {
-				fmt.Println("Error:", err)
-				return
-			}
-			hand.AcceptBets()
-
 			//FLOP PHASE
 			hand.DealFlopCards()
 			hand.AcceptBets()

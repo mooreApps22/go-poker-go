@@ -2,17 +2,18 @@ package poker
 
 import (
 	"errors"
+	"fmt"
 )
 
-func (hand *Hand) ApplyPlayerAction(action PlayerAction) error {
+func (hand *Hand) ApplyPlayerAction(action PlayerAction) (bool, error) {
 	if hand.IsOver() {
-		return errors.New("hand is over")
+		return false, errors.New("hand is over")
 	}
 
 	player := hand.players[hand.currentPlayerIndex]
 
 	if player.id != action.PlayerID {
-		return errors.New("not your turn")
+		return false, errors.New("not your turn")
 	}
 
 	var err error
@@ -27,16 +28,27 @@ func (hand *Hand) ApplyPlayerAction(action PlayerAction) error {
 			player.hasActed = true
 		}
 	default:
-		return errors.New("action not implemented")
+		return false, errors.New("action not implemented")
 	}
 
 	if err != nil {
-		return err
+		return false, err
+	}
+
+	if hand.bettingRoundComplete() {
+		fmt.Println("BETTING ROUND COMPLETE")
+		hand.currentCall = 0
+
+		for _, player := range hand.players {
+			player.currentBet = 0
+			player.hasActed = false
+		}
+		return true, nil
 	}
 
 	hand.advanceCurrentPlayer()
 
-	return nil
+	return false, nil
 }
 
 func (hand *Hand) advanceCurrentPlayer() {

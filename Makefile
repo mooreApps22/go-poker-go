@@ -1,4 +1,4 @@
-SERVER-NAME := poker-server
+SERVER-NAME := server
 CLIENT-NAME := poker-client
 
 .PHONY: all build run clean docker-up docker-down docker-clean

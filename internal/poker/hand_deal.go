@@ -1,5 +1,7 @@
 package poker
 
+import "errors"
+
 func (hand *Hand) DealHoleCards() error {
 	for holeCardIndex := 0; holeCardIndex < 2; holeCardIndex++ {
 		for offset := 0; offset < len(hand.players); offset++ {
@@ -68,4 +70,20 @@ func (hand *Hand) DealRiverCard() error {
 	hand.communityCardsDealt += 1
 	hand.phase = River
 	return nil
+}
+
+func (hand *Hand) AdvancePhase() error {
+	switch hand.phase {
+	case PreFlop:
+		return hand.DealFlopCards()
+	case Flop:
+		return hand.DealTurnCard()
+	case Turn:
+		return hand.DealRiverCard()
+	case River:
+		hand.phase = Showdown
+		return nil
+	default:
+		return errors.New("hand cannot advance from current phase")
+	}
 }
