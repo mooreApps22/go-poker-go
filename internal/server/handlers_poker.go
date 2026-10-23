@@ -102,6 +102,8 @@ func (server *Server) handlePlayerAction(
 			return
 		}
 
+		server.broadcastPhase()
+
 		communityCards := hand.GetCommunityCardsDealt()
 		formattedCommunityCards := poker.FormatPublicCards(communityCards)
 

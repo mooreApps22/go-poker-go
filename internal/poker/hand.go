@@ -95,3 +95,7 @@ func (hand *Hand) GetUTGPlayer() *Player {
 func (hand *Hand) GetCurrentPlayer() *Player {
 	return hand.players[hand.currentPlayerIndex]
 }
+
+func (hand *Hand) GetPhase() HandPhase {
+	return hand.phase
+}

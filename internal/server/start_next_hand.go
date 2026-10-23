@@ -46,3 +46,20 @@ func (server *Server) startNextHand() {
 		currentPlayer.GetName(),
 	))
 }
+
+func (server *Server) broadcastPhase() {
+	hand := server.gameHost.GetHand()
+
+	switch hand.GetPhase() {
+	case poker.PreFlop:
+		server.broadcast("Phase: PreFlop\n")
+	case poker.Flop:
+		server.broadcast("Phase: Flop\n")
+	case poker.Turn:
+		server.broadcast("Phase: Turn\n")
+	case poker.River:
+		server.broadcast("Phase: River\n")
+	case poker.Showdown:
+		server.broadcast("Phase: Showdown\n")
+	}
+}
