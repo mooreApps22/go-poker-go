@@ -2,7 +2,6 @@ package poker
 
 import (
 	"errors"
-	"fmt"
 )
 
 func (hand *Hand) ApplyPlayerAction(action PlayerAction) (bool, error) {
@@ -27,6 +26,14 @@ func (hand *Hand) ApplyPlayerAction(action PlayerAction) (bool, error) {
 		} else {
 			player.hasActed = true
 		}
+	case Fold:
+		hand.fold(player)
+	case Bet:
+		hand.bet(player, action.Amount)
+	case Raise:
+		hand.raise(player, action.Amount)
+	case AllIn:
+		hand.allIn(player)
 	default:
 		return false, errors.New("action not implemented")
 	}
@@ -36,7 +43,6 @@ func (hand *Hand) ApplyPlayerAction(action PlayerAction) (bool, error) {
 	}
 
 	if hand.bettingRoundComplete() {
-		fmt.Println("BETTING ROUND COMPLETE")
 		hand.currentCall = 0
 
 		for _, player := range hand.players {
@@ -52,9 +58,17 @@ func (hand *Hand) ApplyPlayerAction(action PlayerAction) (bool, error) {
 }
 
 func (hand *Hand) advanceCurrentPlayer() {
-	hand.currentPlayerIndex++
+	for {
+		hand.currentPlayerIndex++
 
-	if hand.currentPlayerIndex >= len(hand.players) {
-		hand.currentPlayerIndex = 0
+		if hand.currentPlayerIndex >= len(hand.players) {
+			hand.currentPlayerIndex = 0
+		}
+
+		player := hand.players[hand.currentPlayerIndex]
+
+		if !player.hasFolded && !player.hasAllIn {
+			return
+		}
 	}
 }
