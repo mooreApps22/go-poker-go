@@ -63,7 +63,7 @@ func (server *Server) handlePlayerAction(
 
 	hand := server.gameHost.GetHand()
 
-	bettingRoundComplete, err := hand.ApplyPlayerAction(playerAction)
+	bettingRoundComplete, err := hand.ApplyPlayerAction(&playerAction)
 	if err != nil {
 		sendErr := sendClientResponse(
 			clientMessage.client,
@@ -112,10 +112,7 @@ func (server *Server) handlePlayerAction(
 	} else {
 		currentPlayer := hand.GetCurrentPlayer()
 
-		server.broadcast(fmt.Sprintf(
-			"It's %s's turn.\n",
-			currentPlayer.GetName(),
-		))
+		server.broadcastTurn(currentPlayer)
 	}
 
 }
@@ -151,8 +148,9 @@ func (server *Server) handleCall(
 	player := server.gameHost.GetPlayer(playerAction.PlayerID)
 
 	server.broadcast(fmt.Sprintf(
-		"%s called.\n",
+		"%s called $%d.\n",
 		player.GetName(),
+		playerAction.Amount,
 	))
 
 	logPlayerAction(clientMessage.client, playerAction)
@@ -163,11 +161,14 @@ func (server *Server) handleBet(
 	playerAction poker.PlayerAction,
 ) {
 	//placeholder logic
-	sendPlayerAction(
-		clientMessage,
-		"You have selected to Bet.\n",
-		playerAction,
-	)
+
+	player := server.gameHost.GetPlayer(playerAction.PlayerID)
+
+	server.broadcast(fmt.Sprintf(
+		"%s bet $%d.\n",
+		player.GetName(),
+		playerAction.Amount,
+	))
 
 	logPlayerAction(clientMessage.client, playerAction)
 }
@@ -176,12 +177,13 @@ func (server *Server) handleRaise(
 	clientMessage ClientMessage,
 	playerAction poker.PlayerAction,
 ) {
-	//placeholder logic
-	sendPlayerAction(
-		clientMessage,
-		"You have selected to Raise.\n",
-		playerAction,
-	)
+	player := server.gameHost.GetPlayer(playerAction.PlayerID)
+
+	server.broadcast(fmt.Sprintf(
+		"%s raises $%d.\n",
+		player.GetName(),
+		playerAction.Amount,
+	))
 
 	logPlayerAction(clientMessage.client, playerAction)
 }
@@ -190,12 +192,13 @@ func (server *Server) handleAllIn(
 	clientMessage ClientMessage,
 	playerAction poker.PlayerAction,
 ) {
-	//placeholder logic
-	sendPlayerAction(
-		clientMessage,
-		"You have selected to go All In.\n",
-		playerAction,
-	)
+	player := server.gameHost.GetPlayer(playerAction.PlayerID)
+
+	server.broadcast(fmt.Sprintf(
+		"%s goes all in with $%d.\n",
+		player.GetName(),
+		playerAction.Amount,
+	))
 
 	logPlayerAction(clientMessage.client, playerAction)
 }

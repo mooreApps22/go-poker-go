@@ -4,7 +4,7 @@ import (
 	"errors"
 )
 
-func (hand *Hand) ApplyPlayerAction(action PlayerAction) (bool, error) {
+func (hand *Hand) ApplyPlayerAction(action *PlayerAction) (bool, error) {
 	if hand.IsOver() {
 		return false, errors.New("hand is over")
 	}
@@ -19,7 +19,10 @@ func (hand *Hand) ApplyPlayerAction(action PlayerAction) (bool, error) {
 
 	switch action.Action {
 	case Call:
+		amountToCall := hand.currentCall - player.currentBet
+
 		err = hand.call(player)
+		action.Amount = amountToCall
 	case Check:
 		if player.GetCurrentBet() != hand.currentCall {
 			err = errors.New("you must meet the current call to check")
@@ -34,6 +37,7 @@ func (hand *Hand) ApplyPlayerAction(action PlayerAction) (bool, error) {
 		hand.raise(player, action.Amount)
 	case AllIn:
 		hand.allIn(player)
+		action.Amount = player.GetChips()
 	default:
 		return false, errors.New("action not implemented")
 	}

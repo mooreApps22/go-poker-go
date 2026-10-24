@@ -28,6 +28,33 @@ func (server *Server) broadcast(message string) {
 	}
 }
 
+/*
+	server.broadcast(fmt.Sprintf(
+		"It's %s's turn.\n",
+		currentPlayer.GetName(),
+	))
+*/
+
+func (server *Server) broadcastTurn(currentPlayer *poker.Player) {
+	messageToOther := fmt.Sprintf("It's %s's turn.\n", currentPlayer.GetName())
+
+	for _, client := range server.clients {
+		var sendErr error
+		if client.id == currentPlayer.GetID() {
+			sendErr = sendClientResponse(client, "It's your turn.\n")
+		} else {
+			sendErr = sendClientResponse(client, messageToOther)
+		}
+		if sendErr != nil {
+			logClientError(
+				client,
+				"Error broadcasting response",
+				sendErr,
+			)
+		}
+	}
+}
+
 func (server *Server) sendPrivateHoleCards() {
 	for _, client := range server.clients {
 		player := server.gameHost.GetPlayer(client.id)
