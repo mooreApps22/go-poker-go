@@ -109,10 +109,6 @@ func (server *Server) handlePlayerAction(
 
 			server.broadcastTurn(currentPlayer)
 		} else {
-			hand.CreatePots()
-			hand.PickWinners()
-			hand.AwardPots()
-
 			server.broadcastShowdown(hand)
 		}
 	} else {

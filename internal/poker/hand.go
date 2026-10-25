@@ -116,3 +116,11 @@ func (phase HandPhase) String() string {
 		return "?"
 	}
 }
+
+func (hand *Hand) GetPots() []Pot {
+	return hand.pots
+}
+
+func (hand *Hand) GetWinners() []*Player {
+	return hand.winners
+}

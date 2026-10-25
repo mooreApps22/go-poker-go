@@ -90,6 +90,84 @@ func (server *Server) broadcastShowdown(hand *poker.Hand) {
 	//get players still in the hand
 	// show their hole cards
 	// show their hand values
-	// show pot winner(s)
+	hand.CreatePots()
+	hand.PickWinners()
 
+	server.broadcastPots(hand)
+
+	hand.AwardPots()
+
+	// show pot winner(s)
+	server.broadcastPots(hand)
+}
+
+func (server *Server) broadcastPots(hand *poker.Hand) {
+	for potIndex, pot := range hand.GetPots() {
+		var response string
+
+		if potIndex == 0 {
+			response = fmt.Sprintf(
+				"Main Pot: $%d\n",
+				pot.GetValue(),
+			)
+		} else {
+			response = fmt.Sprintf(
+				"Side Pot %c: $%d\n",
+				'A'+rune(potIndex-1),
+				pot.GetValue(),
+			)
+		}
+
+		server.broadcast(response)
+
+		eligiblePlayers := pot.GetEligiblePlayers()
+
+		response = "Eligible: "
+
+		for playerIndex, player := range eligiblePlayers {
+			if playerIndex > 0 {
+				response += ", "
+			}
+
+			response += player.GetName()
+		}
+
+		response += "\n"
+
+		server.broadcast(response)
+	}
+}
+
+func (server *Server) broadcastWinners(hand *poker.Hand) {
+	for potIndex, pot := range hand.GetPots() {
+		winners := hand.GetWinners()
+
+		if len(winners) == 0 {
+			continue
+		}
+
+		winnings := pot.GetValue() / int64(len(winners))
+
+		var potName string
+
+		if potIndex == 0 {
+			potName = "Main Pot"
+		} else {
+			potName = fmt.Sprintf(
+				"Side Pot %c",
+				'A'+rune(potIndex-1),
+			)
+		}
+
+		for _, winner := range winners {
+			response := fmt.Sprintf(
+				"%s wins $%d from the %s.\n",
+				winner.GetName(),
+				winnings,
+				potName,
+			)
+
+			server.broadcast(response)
+		}
+	}
 }

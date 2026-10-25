@@ -20,3 +20,7 @@ func (pot *Pot) BuildBet(betValue int64, player *Player) {
 func (pot Pot) GetValue() int64 {
 	return pot.value
 }
+
+func (pot Pot) GetEligiblePlayers() []*Player {
+	return pot.eligiblePlayers
+}
