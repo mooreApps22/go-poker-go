@@ -58,6 +58,8 @@ func parsePokerClientMessage(clientMessage ClientMessage) (poker.PlayerAction, e
 		action = poker.AllIn
 	case "P", "CHIP", "CHIPS":
 		action = poker.Chips
+	case "H", "HOLE":
+		action = poker.Hole
 	default:
 		action = poker.Invalid
 	}

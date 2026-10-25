@@ -42,6 +42,7 @@ func (hand *Hand) ApplyPlayerAction(action *PlayerAction) (ActionResult, error) 
 		action.Amount = player.GetChips()
 	case Chips:
 		action.Amount = player.GetChips()
+	case Hole:
 	default:
 		return result, errors.New("action not implemented")
 	}
@@ -91,7 +92,7 @@ func (hand *Hand) advanceCurrentPlayer() {
 }
 
 func (hand *Hand) turnAdvancingAction(result ActionResult) bool {
-	if result.Action == Chips {
+	if result.Action == Chips || result.Action == Hole {
 		return false
 	}
 	return true

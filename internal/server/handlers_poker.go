@@ -63,6 +63,8 @@ func (server *Server) handlePlayerAction(
 	}
 
 	switch playerAction.Action {
+	case poker.Hole:
+		server.handleHoleCards(clientMessage, result)
 	case poker.Chips:
 		server.handleChips(clientMessage, result)
 	case poker.Fold:
@@ -102,6 +104,19 @@ func (server *Server) handlePlayerAction(
 		server.broadcastTurn(currentPlayer)
 	}
 
+}
+
+func (server *Server) handleHoleCards(
+	clientMessage ClientMessage,
+	result poker.ActionResult,
+) {
+
+	holeCards := poker.FormatPrivateCards(result.Player.GetHoleCards())
+	response := fmt.Sprintf("%s\n", holeCards)
+
+	sendPlayerAction(clientMessage, response, result)
+
+	logPlayerAction(clientMessage.client, result)
 }
 
 func (server *Server) handleChips(

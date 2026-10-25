@@ -11,6 +11,7 @@ const (
 	Raise
 	AllIn
 	Chips
+	Hole
 )
 
 type PlayerAction struct {
@@ -35,6 +36,8 @@ func (action ActionType) String() string {
 		return "ALL IN"
 	case Chips:
 		return "CHIPS"
+	case Hole:
+		return "HOLE"
 	default:
 		return "INVALID"
 	}
