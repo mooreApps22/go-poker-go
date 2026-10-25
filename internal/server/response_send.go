@@ -84,3 +84,12 @@ func (server *Server) sendPrivateHoleCards() {
 		}
 	}
 }
+
+func (server *Server) broadcastShowdown(hand *poker.Hand) {
+	server.broadcast("SHOWDOWN\n")
+	//get players still in the hand
+	// show their hole cards
+	// show their hand values
+	// show pot winner(s)
+
+}

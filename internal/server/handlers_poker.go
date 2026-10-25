@@ -96,22 +96,30 @@ func (server *Server) handlePlayerAction(
 		potValueResponse := fmt.Sprintf("Current Pot Value: $%d.\n", potValue)
 		server.broadcast(potValueResponse)
 
-		communityCards := hand.GetCommunityCardsDealt()
-		formattedCommunityCards := poker.FormatPublicCards(communityCards)
+		if hand.GetPhase() != poker.Showdown {
+			communityCards := hand.GetCommunityCardsDealt()
+			formattedCommunityCards := poker.FormatPublicCards(communityCards)
 
-		server.broadcast(hand.GetPhase().String())
-		server.broadcast(formattedCommunityCards)
+			server.broadcast(hand.GetPhase().String())
 
-		hand.SetFirstPostFlopPlayer()
-		currentPlayer := hand.GetCurrentPlayer()
+			server.broadcast(formattedCommunityCards)
 
-		server.broadcastTurn(currentPlayer)
+			hand.SetFirstPostFlopPlayer()
+			currentPlayer := hand.GetCurrentPlayer()
+
+			server.broadcastTurn(currentPlayer)
+		} else {
+			hand.CreatePots()
+			hand.PickWinners()
+			hand.AwardPots()
+
+			server.broadcastShowdown(hand)
+		}
 	} else {
 		currentPlayer := hand.GetCurrentPlayer()
 
 		server.broadcastTurn(currentPlayer)
 	}
-
 }
 
 func (server *Server) handleMenu(

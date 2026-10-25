@@ -82,6 +82,7 @@ func (hand *Hand) AdvancePhase() error {
 		return hand.DealRiverCard()
 	case River:
 		hand.phase = Showdown
+		hand.ShowDown()
 		return nil
 	default:
 		return errors.New("hand cannot advance from current phase")
