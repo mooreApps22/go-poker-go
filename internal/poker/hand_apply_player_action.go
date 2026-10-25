@@ -99,3 +99,8 @@ func (hand *Hand) turnAdvancingAction(result ActionResult) bool {
 		result.Action != Hole &&
 		result.Action != Menu
 }
+
+func (hand *Hand) SetFirstPostFlopPlayer() {
+	hand.currentPlayerIndex = hand.dealerIndex
+	hand.advanceCurrentPlayer()
+}

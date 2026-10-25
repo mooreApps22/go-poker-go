@@ -99,3 +99,20 @@ func (hand *Hand) GetCurrentPlayer() *Player {
 func (hand *Hand) GetPhase() HandPhase {
 	return hand.phase
 }
+
+func (phase HandPhase) String() string {
+	switch phase {
+	case PreFlop:
+		return "The Pre-Flop:\n"
+	case Flop:
+		return "The Flop:\n"
+	case Turn:
+		return "The Turn:\n"
+	case River:
+		return "The River:\n"
+	case Showdown:
+		return "The Showdown:\n"
+	default:
+		return "?"
+	}
+}

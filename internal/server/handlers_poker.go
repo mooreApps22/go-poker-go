@@ -99,8 +99,13 @@ func (server *Server) handlePlayerAction(
 		communityCards := hand.GetCommunityCardsDealt()
 		formattedCommunityCards := poker.FormatPublicCards(communityCards)
 
+		server.broadcast(hand.GetPhase().String())
 		server.broadcast(formattedCommunityCards)
 
+		hand.SetFirstPostFlopPlayer()
+		currentPlayer := hand.GetCurrentPlayer()
+
+		server.broadcastTurn(currentPlayer)
 	} else {
 		currentPlayer := hand.GetCurrentPlayer()
 
@@ -149,10 +154,7 @@ func (server *Server) handleFold(
 	clientMessage ClientMessage,
 	result poker.ActionResult,
 ) {
-	server.broadcast(fmt.Sprintf(
-		"%s folded.\n",
-		result.Player.GetName(),
-	))
+	server.broadcastActionResult(result, "folded.\n")
 
 	logPlayerAction(clientMessage.client, result)
 }
@@ -161,10 +163,7 @@ func (server *Server) handleCheck(
 	clientMessage ClientMessage,
 	result poker.ActionResult,
 ) {
-	server.broadcast(fmt.Sprintf(
-		"%s checked.\n",
-		result.Player.GetName(),
-	))
+	server.broadcastActionResult(result, "checked.\n")
 
 	logPlayerAction(clientMessage.client, result)
 }
@@ -173,9 +172,8 @@ func (server *Server) handleCall(
 	clientMessage ClientMessage,
 	result poker.ActionResult,
 ) {
-	server.broadcast(fmt.Sprintf(
-		"%s called $%d.\n",
-		result.Player.GetName(),
+	server.broadcastActionResult(result, fmt.Sprintf(
+		"called $%d.\n",
 		result.Amount,
 	))
 
@@ -186,9 +184,8 @@ func (server *Server) handleBet(
 	clientMessage ClientMessage,
 	result poker.ActionResult,
 ) {
-	server.broadcast(fmt.Sprintf(
-		"%s bet $%d.\n",
-		result.Player.GetName(),
+	server.broadcastActionResult(result, fmt.Sprintf(
+		"bet $%d.\n",
 		result.Amount,
 	))
 
@@ -199,9 +196,15 @@ func (server *Server) handleRaise(
 	clientMessage ClientMessage,
 	result poker.ActionResult,
 ) {
-	server.broadcast(fmt.Sprintf(
-		"%s raises $%d.\n",
-		result.Player.GetName(),
+	/*
+		server.broadcast(fmt.Sprintf(
+			"%s raises $%d.\n",
+			result.Player.GetName(),
+			result.Amount,
+		))
+	*/
+	server.broadcastActionResult(result, fmt.Sprintf(
+		"raised $%d.\n",
 		result.Amount,
 	))
 
@@ -213,9 +216,8 @@ func (server *Server) handleAllIn(
 	result poker.ActionResult,
 ) {
 
-	server.broadcast(fmt.Sprintf(
-		"%s goes all in with $%d.\n",
-		result.Player.GetName(),
+	server.broadcastActionResult(result, fmt.Sprintf(
+		"goes all in with $%d.\n",
 		result.Amount,
 	))
 

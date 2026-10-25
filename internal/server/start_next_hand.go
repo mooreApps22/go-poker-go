@@ -36,30 +36,8 @@ func (server *Server) startNextHand() {
 
 	server.broadcast("The hole card have been dealt.\n")
 
-	// privately send hole cards
 	server.broadcast("These are your hole cards:\n")
 	server.sendPrivateHoleCards()
 
-	// tell everyone whose turn it is
-	server.broadcast(fmt.Sprintf(
-		"It's %s's turn.\n",
-		currentPlayer.GetName(),
-	))
-}
-
-func (server *Server) broadcastPhase() {
-	hand := server.gameHost.GetHand()
-
-	switch hand.GetPhase() {
-	case poker.PreFlop:
-		server.broadcast("Phase: PreFlop\n")
-	case poker.Flop:
-		server.broadcast("Phase: Flop\n")
-	case poker.Turn:
-		server.broadcast("Phase: Turn\n")
-	case poker.River:
-		server.broadcast("Phase: River\n")
-	case poker.Showdown:
-		server.broadcast("Phase: Showdown\n")
-	}
+	server.broadcastTurn(currentPlayer)
 }
