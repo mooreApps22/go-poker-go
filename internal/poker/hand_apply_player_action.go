@@ -4,15 +4,17 @@ import (
 	"errors"
 )
 
-func (hand *Hand) ApplyPlayerAction(action *PlayerAction) (bool, error) {
+func (hand *Hand) ApplyPlayerAction(action *PlayerAction) (ActionResult, error) {
+	var result ActionResult
+
 	if hand.IsOver() {
-		return false, errors.New("hand is over")
+		return result, errors.New("hand is over")
 	}
 
 	player := hand.players[hand.currentPlayerIndex]
 
 	if player.id != action.PlayerID {
-		return false, errors.New("not your turn")
+		return result, errors.New("not your turn")
 	}
 
 	var err error
@@ -20,9 +22,9 @@ func (hand *Hand) ApplyPlayerAction(action *PlayerAction) (bool, error) {
 	switch action.Action {
 	case Call:
 		amountToCall := hand.currentCall - player.currentBet
+		action.Amount = amountToCall
 
 		err = hand.call(player)
-		action.Amount = amountToCall
 	case Check:
 		if player.GetCurrentBet() != hand.currentCall {
 			err = errors.New("you must meet the current call to check")
@@ -38,27 +40,38 @@ func (hand *Hand) ApplyPlayerAction(action *PlayerAction) (bool, error) {
 	case AllIn:
 		hand.allIn(player)
 		action.Amount = player.GetChips()
+	case Chips:
+		action.Amount = player.GetChips()
 	default:
-		return false, errors.New("action not implemented")
+		return result, errors.New("action not implemented")
 	}
 
 	if err != nil {
-		return false, err
+		return result, err
 	}
 
+	result.Action = action.Action
+	result.Player = player
+	result.Amount = action.Amount
+
 	if hand.bettingRoundComplete() {
+		result.BettingRoundEnded = true
+
 		hand.currentCall = 0
 
 		for _, player := range hand.players {
 			player.currentBet = 0
 			player.hasActed = false
 		}
-		return true, nil
+
+		return result, nil
 	}
 
-	hand.advanceCurrentPlayer()
+	if hand.turnAdvancingAction(result) {
+		hand.advanceCurrentPlayer()
+	}
 
-	return false, nil
+	return result, nil
 }
 
 func (hand *Hand) advanceCurrentPlayer() {
@@ -75,4 +88,11 @@ func (hand *Hand) advanceCurrentPlayer() {
 			return
 		}
 	}
+}
+
+func (hand *Hand) turnAdvancingAction(result ActionResult) bool {
+	if result.Action == Chips {
+		return false
+	}
+	return true
 }

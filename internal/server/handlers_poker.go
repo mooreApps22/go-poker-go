@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-
 	"github.com/mooreApps22/go-poker-go/internal/poker"
 )
 
@@ -25,7 +24,7 @@ func (server *Server) handleInvalidPokerAction(
 func sendPlayerAction(
 	clientMessage ClientMessage,
 	response string,
-	playerAction poker.PlayerAction,
+	result poker.ActionResult,
 ) {
 	sendErr := sendClientResponse(clientMessage.client, response)
 	if sendErr != nil {
@@ -37,23 +36,7 @@ func sendPlayerAction(
 		return
 	}
 
-	logPlayerAction(clientMessage.client, playerAction)
-}
-
-func (server *Server) handleChipRequest(
-	clientMessage ClientMessage,
-	playerAction poker.PlayerAction,
-) {
-	response := fmt.Sprintf(
-		"You have $%d in chips.\n",
-		server.gameHost.GetPlayer(clientMessage.client.id).GetChips(),
-	)
-
-	sendPlayerAction(
-		clientMessage,
-		response,
-		playerAction,
-	)
+	logPlayerAction(clientMessage.client, result)
 }
 
 func (server *Server) handlePlayerAction(
@@ -63,7 +46,7 @@ func (server *Server) handlePlayerAction(
 
 	hand := server.gameHost.GetHand()
 
-	bettingRoundComplete, err := hand.ApplyPlayerAction(&playerAction)
+	result, err := hand.ApplyPlayerAction(&playerAction)
 	if err != nil {
 		sendErr := sendClientResponse(
 			clientMessage.client,
@@ -80,21 +63,23 @@ func (server *Server) handlePlayerAction(
 	}
 
 	switch playerAction.Action {
+	case poker.Chips:
+		server.handleChips(clientMessage, result)
 	case poker.Fold:
-		server.handleFold(clientMessage, playerAction)
+		server.handleFold(clientMessage, result)
 	case poker.Check:
-		server.handleCheck(clientMessage, playerAction)
+		server.handleCheck(clientMessage, result)
 	case poker.Call:
-		server.handleCall(clientMessage, playerAction)
+		server.handleCall(clientMessage, result)
 	case poker.Bet:
-		server.handleBet(clientMessage, playerAction)
+		server.handleBet(clientMessage, result)
 	case poker.Raise:
-		server.handleRaise(clientMessage, playerAction)
+		server.handleRaise(clientMessage, result)
 	case poker.AllIn:
-		server.handleAllIn(clientMessage, playerAction)
+		server.handleAllIn(clientMessage, result)
 	}
 
-	if bettingRoundComplete {
+	if result.BettingRoundEnded {
 
 		err := hand.AdvancePhase()
 		if err != nil {
@@ -102,7 +87,9 @@ func (server *Server) handlePlayerAction(
 			return
 		}
 
-		server.broadcastPhase()
+		potValue := server.gameHost.GetHand().GetCurrentPotValue()
+		potValueResponse := fmt.Sprintf("Current Pot Value: $%d.\n", potValue)
+		server.broadcast(potValueResponse)
 
 		communityCards := hand.GetCommunityCardsDealt()
 		formattedCommunityCards := poker.FormatPublicCards(communityCards)
@@ -117,88 +104,93 @@ func (server *Server) handlePlayerAction(
 
 }
 
+func (server *Server) handleChips(
+	clientMessage ClientMessage,
+	result poker.ActionResult,
+) {
+	response := fmt.Sprintf(
+		"You have $%d in chips.\n",
+		result.Amount,
+	)
+
+	sendPlayerAction(clientMessage, response, result)
+
+	logPlayerAction(clientMessage.client, result)
+}
+
 func (server *Server) handleFold(
 	clientMessage ClientMessage,
-	playerAction poker.PlayerAction,
+	result poker.ActionResult,
 ) {
-	//placeholder logic
-	sendPlayerAction(
-		clientMessage,
-		"You have selected to Fold.\n",
-		playerAction,
-	)
+	server.broadcast(fmt.Sprintf(
+		"%s folded.\n",
+		result.Player.GetName(),
+	))
+
+	logPlayerAction(clientMessage.client, result)
 }
 
 func (server *Server) handleCheck(
 	clientMessage ClientMessage,
-	playerAction poker.PlayerAction,
+	result poker.ActionResult,
 ) {
-	//placeholder logic
-	sendPlayerAction(
-		clientMessage,
-		"You have selected to Check.\n",
-		playerAction,
-	)
+	server.broadcast(fmt.Sprintf(
+		"%s checked.\n",
+		result.Player.GetName(),
+	))
+
+	logPlayerAction(clientMessage.client, result)
 }
 
 func (server *Server) handleCall(
 	clientMessage ClientMessage,
-	playerAction poker.PlayerAction,
+	result poker.ActionResult,
 ) {
-	player := server.gameHost.GetPlayer(playerAction.PlayerID)
-
 	server.broadcast(fmt.Sprintf(
 		"%s called $%d.\n",
-		player.GetName(),
-		playerAction.Amount,
+		result.Player.GetName(),
+		result.Amount,
 	))
 
-	logPlayerAction(clientMessage.client, playerAction)
+	logPlayerAction(clientMessage.client, result)
 }
 
 func (server *Server) handleBet(
 	clientMessage ClientMessage,
-	playerAction poker.PlayerAction,
+	result poker.ActionResult,
 ) {
-	//placeholder logic
-
-	player := server.gameHost.GetPlayer(playerAction.PlayerID)
-
 	server.broadcast(fmt.Sprintf(
 		"%s bet $%d.\n",
-		player.GetName(),
-		playerAction.Amount,
+		result.Player.GetName(),
+		result.Amount,
 	))
 
-	logPlayerAction(clientMessage.client, playerAction)
+	logPlayerAction(clientMessage.client, result)
 }
 
 func (server *Server) handleRaise(
 	clientMessage ClientMessage,
-	playerAction poker.PlayerAction,
+	result poker.ActionResult,
 ) {
-	player := server.gameHost.GetPlayer(playerAction.PlayerID)
-
 	server.broadcast(fmt.Sprintf(
 		"%s raises $%d.\n",
-		player.GetName(),
-		playerAction.Amount,
+		result.Player.GetName(),
+		result.Amount,
 	))
 
-	logPlayerAction(clientMessage.client, playerAction)
+	logPlayerAction(clientMessage.client, result)
 }
 
 func (server *Server) handleAllIn(
 	clientMessage ClientMessage,
-	playerAction poker.PlayerAction,
+	result poker.ActionResult,
 ) {
-	player := server.gameHost.GetPlayer(playerAction.PlayerID)
 
 	server.broadcast(fmt.Sprintf(
 		"%s goes all in with $%d.\n",
-		player.GetName(),
-		playerAction.Amount,
+		result.Player.GetName(),
+		result.Amount,
 	))
 
-	logPlayerAction(clientMessage.client, playerAction)
+	logPlayerAction(clientMessage.client, result)
 }

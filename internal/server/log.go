@@ -39,15 +39,15 @@ func logClientError(client *Client, message string, err error) {
 
 func logPlayerAction(
 	client *Client,
-	playerAction poker.PlayerAction,
+	result poker.ActionResult,
 ) {
-	if playerAction.Amount > 0 {
+	if result.Amount > 0 {
 		fmt.Printf(
 			"[%s] Client %d: %s $%d\n",
 			my_timestamp(),
 			client.id,
-			playerAction.Action.String(),
-			playerAction.Amount,
+			result.Action.String(),
+			result.Amount,
 		)
 		return
 	}
@@ -56,6 +56,6 @@ func logPlayerAction(
 		"[%s] Client %d: %s\n",
 		my_timestamp(),
 		client.id,
-		playerAction.Action.String(),
+		result.Action.String(),
 	)
 }

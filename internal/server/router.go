@@ -2,8 +2,6 @@ package server
 
 import (
 	"strings"
-
-	"github.com/mooreApps22/go-poker-go/internal/poker"
 )
 
 func (server *Server) routeClientMessages(clientMessageChannel chan ClientMessage) {
@@ -23,12 +21,7 @@ func (server *Server) routePokerClientMessage(clientMessage ClientMessage) {
 		return
 	}
 
-	switch playerAction.Action {
-	case poker.Chips:
-		server.handleChipRequest(clientMessage, playerAction)
-	default:
-		server.handlePlayerAction(clientMessage, playerAction)
-	}
+	server.handlePlayerAction(clientMessage, playerAction)
 }
 
 func (server *Server) routeLobbyClientMessage(clientMessage ClientMessage) {
