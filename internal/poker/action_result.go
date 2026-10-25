@@ -5,4 +5,5 @@ type ActionResult struct {
 	Player            *Player
 	Amount            int64
 	BettingRoundEnded bool
+	Message           string
 }

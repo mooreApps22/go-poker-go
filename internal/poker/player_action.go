@@ -12,6 +12,7 @@ const (
 	AllIn
 	Chips
 	Hole
+	Menu
 )
 
 type PlayerAction struct {
@@ -38,6 +39,8 @@ func (action ActionType) String() string {
 		return "CHIPS"
 	case Hole:
 		return "HOLE"
+	case Menu:
+		return "MENU"
 	default:
 		return "INVALID"
 	}

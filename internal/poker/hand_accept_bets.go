@@ -5,46 +5,6 @@ import (
 	"fmt"
 )
 
-/*
-func (hand *Hand) AcceptBets() {
-	if hand.IsOver() {
-		return
-	}
-	for {
-		if hand.bettingRoundComplete() {
-			break
-		}
-
-		if hand.currentPlayerIndex >= len(hand.players) {
-			hand.currentPlayerIndex = 0
-		}
-
-		player := hand.players[hand.currentPlayerIndex]
-
-		if player.hasFolded || player.hasAllIn {
-			hand.currentPlayerIndex++
-			continue
-		}
-
-		hand.handlePlayerInput(player)
-
-		if hand.IsOver() {
-			return
-		}
-
-		hand.currentPlayerIndex++
-	}
-
-	// Reset for next Betting Round
-	hand.currentCall = 0
-
-	for _, player := range hand.players {
-		player.currentBet = 0
-		player.hasActed = false
-	}
-}
-*/
-
 func (hand *Hand) bettingRoundComplete() bool {
 	for _, player := range hand.players {
 		if !player.hasFolded &&
@@ -57,81 +17,29 @@ func (hand *Hand) bettingRoundComplete() bool {
 	return true
 }
 
-func (hand *Hand) displayPlayerActions(player *Player) {
-	if len(hand.GetCommunityCardsDealt()) > 0 {
-		fmt.Println("Community Cards Dealt:")
-		fmt.Println(FormatPublicCards(hand.GetCommunityCardsDealt()))
-	}
-	if len(player.holeCards) > 0 {
-		fmt.Printf("%v's Hole Cards:\n", player.name)
-		fmt.Println(FormatPublicCards(player.GetHoleCards()))
-	}
-	fmt.Println("Current Pot: $", hand.GetCurrentPotValue())
-	fmt.Printf("%v's Turn:\n", player.name)
+func (hand *Hand) GetPlayerActionOptions(player *Player) string {
+	var options string
+
 	if hand.currentCall == 0 {
-		fmt.Println("[K] Check")
-		fmt.Println("[B] Bet")
+		options += "[K] Check\n"
+		options += "[B] Bet\n"
 	} else if player.currentBet < hand.currentCall {
 		amountToCall := hand.currentCall - player.currentBet
-		fmt.Println("[C] Call $", amountToCall)
+		options += fmt.Sprintf("[C] Call $%d\n", amountToCall)
 	} else {
-		fmt.Println("[K] Check")
+		options += "[K] Check\n"
 	}
 
 	if hand.currentCall > 0 {
-		fmt.Println("[R] Raise")
+		options += "[R] Raise\n"
 	}
-	fmt.Println("[F] Fold")
-	fmt.Println("[A] All In")
-	fmt.Println("[P] Chips")
+	options += "[F] Fold\n"
+	options += "[A] All In\n"
+	options += "[P] Chips\n"
+	options += "[H] Hole\n"
+
+	return options
 }
-
-/*
-func (hand *Hand) handlePlayerInput(player *Player) {
-	for {
-		hand.displayPlayerActions(player)
-
-		fmt.Print("> ")
-
-		var input string
-		fmt.Scan(&input)
-		upperInput := strings.ToUpper(input)
-
-		switch upperInput {
-		case "K", "CHECK":
-			if player.currentBet != hand.currentCall {
-				fmt.Println("You cannot check.")
-				continue
-			}
-			player.hasActed = true
-			return
-		case "C", "CALL":
-			if hand.call(player) {
-				return
-			}
-		case "B", "BET":
-			if hand.bet(player) {
-				return
-			}
-		case "R", "RAISE":
-			if hand.raise(player) {
-				return
-			}
-		case "F", "FOLD":
-			hand.fold(player)
-			return
-		case "A", "ALL", "ALLIN", "ALL IN":
-			hand.allIn(player)
-			return
-		case "P", "CHIP", "CHIPS":
-			fmt.Println("Chips: $", player.chips)
-		default:
-			fmt.Println("Invalid action")
-			player.hasActed = false
-		}
-	}
-}
-*/
 
 func (hand *Hand) call(player *Player) error {
 	amountToCall := hand.currentCall - player.currentBet

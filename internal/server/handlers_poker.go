@@ -46,6 +46,7 @@ func (server *Server) handlePlayerAction(
 
 	hand := server.gameHost.GetHand()
 
+	// APPLY PLAYER ACTION
 	result, err := hand.ApplyPlayerAction(&playerAction)
 	if err != nil {
 		sendErr := sendClientResponse(
@@ -63,6 +64,8 @@ func (server *Server) handlePlayerAction(
 	}
 
 	switch playerAction.Action {
+	case poker.Menu:
+		server.handleMenu(clientMessage, result)
 	case poker.Hole:
 		server.handleHoleCards(clientMessage, result)
 	case poker.Chips:
@@ -106,13 +109,22 @@ func (server *Server) handlePlayerAction(
 
 }
 
+func (server *Server) handleMenu(
+	clientMessage ClientMessage,
+	result poker.ActionResult,
+) {
+
+	sendPlayerAction(clientMessage, result.Message, result)
+
+	logPlayerAction(clientMessage.client, result)
+}
+
 func (server *Server) handleHoleCards(
 	clientMessage ClientMessage,
 	result poker.ActionResult,
 ) {
 
-	holeCards := poker.FormatPrivateCards(result.Player.GetHoleCards())
-	response := fmt.Sprintf("%s\n", holeCards)
+	response := fmt.Sprintf("%s\n", result.Message)
 
 	sendPlayerAction(clientMessage, response, result)
 

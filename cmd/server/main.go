@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-
-	//	"github.com/mooreApps22/go-poker-go/internal/poker"
 	"github.com/mooreApps22/go-poker-go/internal/host"
 	"github.com/mooreApps22/go-poker-go/internal/server"
 )
@@ -24,24 +22,6 @@ func main() {
 	/*
 
 		for {
-			//FLOP PHASE
-			hand.DealFlopCards()
-			hand.AcceptBets()
-			fmt.Println("Community Flop Cards:")
-			fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
-
-			//TURN PHASE
-			hand.DealTurnCard()
-			hand.AcceptBets()
-			fmt.Println("Community Turn Card:")
-			fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
-
-			//RIVER PHASE
-			hand.DealRiverCard()
-			hand.AcceptBets()
-			fmt.Println("Community River Card:")
-			fmt.Println(poker.FormatCards(hand.GetCommunityCardsDealt()))
-
 			hand.ShowDown()
 
 			hand.CreatePots()
