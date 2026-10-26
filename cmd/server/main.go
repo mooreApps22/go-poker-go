@@ -18,25 +18,4 @@ func main() {
 	fmt.Println("Go Poker Go Server is listening...")
 
 	pokerServer.Run()
-
-	/*
-
-		for {
-			hand.ShowDown()
-
-			hand.CreatePots()
-			hand.PickWinners()
-			hand.AwardPots()
-
-			//DISPLAY WINNERS
-			for _, player := range hand.GetWinner() {
-				fmt.Printf("Winner: %v\n", player.GetName())
-				fmt.Println(poker.FormatCards(player.GetBestCards()))
-			}
-
-			fmt.Println()
-			fmt.Println("END OF HAND")
-			fmt.Println()
-		}
-	*/
 }
