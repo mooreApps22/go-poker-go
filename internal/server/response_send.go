@@ -164,6 +164,10 @@ func (server *Server) broadcastWinners(hand *poker.Hand) {
 			)
 
 			server.broadcast(response)
+			cardResponse := fmt.Sprintf(
+				"%s\n",
+				poker.FormatPrivateCards(winner.GetBestCards()))
+			server.broadcast(cardResponse)
 		}
 	}
 }
