@@ -110,6 +110,7 @@ func (server *Server) handlePlayerAction(
 			server.broadcastTurn(currentPlayer)
 		} else {
 			server.broadcastShowdown(hand)
+			server.startNextHand()
 		}
 	} else {
 		currentPlayer := hand.GetCurrentPlayer()
@@ -200,13 +201,6 @@ func (server *Server) handleRaise(
 	clientMessage ClientMessage,
 	result poker.ActionResult,
 ) {
-	/*
-		server.broadcast(fmt.Sprintf(
-			"%s raises $%d.\n",
-			result.Player.GetName(),
-			result.Amount,
-		))
-	*/
 	server.broadcastActionResult(result, fmt.Sprintf(
 		"raised $%d.\n",
 		result.Amount,

@@ -24,3 +24,7 @@ func (pot Pot) GetValue() int64 {
 func (pot Pot) GetEligiblePlayers() []*Player {
 	return pot.eligiblePlayers
 }
+
+func (pot *Pot) GetWinners() []*Player {
+	return pot.winners
+}

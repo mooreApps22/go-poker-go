@@ -87,18 +87,12 @@ func (server *Server) sendPrivateHoleCards() {
 
 func (server *Server) broadcastShowdown(hand *poker.Hand) {
 	server.broadcast("SHOWDOWN\n")
-	//get players still in the hand
-	// show their hole cards
-	// show their hand values
 	hand.CreatePots()
 	hand.PickWinners()
-
-	server.broadcastPots(hand)
-
 	hand.AwardPots()
 
-	// show pot winner(s)
 	server.broadcastPots(hand)
+	server.broadcastWinners(hand)
 }
 
 func (server *Server) broadcastPots(hand *poker.Hand) {
@@ -119,28 +113,29 @@ func (server *Server) broadcastPots(hand *poker.Hand) {
 		}
 
 		server.broadcast(response)
+		/*
+			eligiblePlayers := pot.GetEligiblePlayers()
 
-		eligiblePlayers := pot.GetEligiblePlayers()
+			response = "Eligible: "
 
-		response = "Eligible: "
+			for playerIndex, player := range eligiblePlayers {
+				if playerIndex > 0 {
+					response += ", "
+				}
 
-		for playerIndex, player := range eligiblePlayers {
-			if playerIndex > 0 {
-				response += ", "
+				response += player.GetName()
 			}
 
-			response += player.GetName()
-		}
+			response += "\n"
 
-		response += "\n"
-
-		server.broadcast(response)
+			server.broadcast(response)
+		*/
 	}
 }
 
 func (server *Server) broadcastWinners(hand *poker.Hand) {
 	for potIndex, pot := range hand.GetPots() {
-		winners := hand.GetWinners()
+		winners := pot.GetWinners()
 
 		if len(winners) == 0 {
 			continue
@@ -161,8 +156,9 @@ func (server *Server) broadcastWinners(hand *poker.Hand) {
 
 		for _, winner := range winners {
 			response := fmt.Sprintf(
-				"%s wins $%d from the %s.\n",
+				"%s's %s wins $%d from the %s.\n",
 				winner.GetName(),
+				winner.GetBestHandValue().Category.String(),
 				winnings,
 				potName,
 			)
