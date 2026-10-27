@@ -1,13 +1,5 @@
 package poker
 
-type ActionResult struct {
-	Action            ActionType
-	Player            *Player
-	Amount            int64
-	BettingRoundEnded bool
-	Message           string
-}
-
 type ActionType uint8
 
 const (
@@ -27,6 +19,14 @@ type PlayerAction struct {
 	PlayerID int
 	Action   ActionType
 	Amount   int64
+}
+
+type ActionResult struct {
+	Action            ActionType
+	Player            *Player
+	Amount            int64
+	BettingRoundEnded bool
+	Message           string
 }
 
 func (action ActionType) String() string {

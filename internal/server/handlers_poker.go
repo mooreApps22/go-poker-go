@@ -63,13 +63,7 @@ func (server *Server) handlePlayerAction(
 		return
 	}
 
-	switch playerAction.Action {
-	case poker.Menu:
-		server.handleMenu(clientMessage, result)
-	case poker.Hole:
-		server.handleHoleCards(clientMessage, result)
-	case poker.Chips:
-		server.handleChips(clientMessage, result)
+	switch result.Action {
 	case poker.Fold:
 		server.handleFold(clientMessage, result)
 	case poker.Check:
@@ -117,42 +111,6 @@ func (server *Server) handlePlayerAction(
 
 		server.broadcastTurn(currentPlayer)
 	}
-}
-
-func (server *Server) handleMenu(
-	clientMessage ClientMessage,
-	result poker.ActionResult,
-) {
-
-	sendPlayerAction(clientMessage, result.Message, result)
-
-	logPlayerAction(clientMessage.client, result)
-}
-
-func (server *Server) handleHoleCards(
-	clientMessage ClientMessage,
-	result poker.ActionResult,
-) {
-
-	response := fmt.Sprintf("%s\n", result.Message)
-
-	sendPlayerAction(clientMessage, response, result)
-
-	logPlayerAction(clientMessage.client, result)
-}
-
-func (server *Server) handleChips(
-	clientMessage ClientMessage,
-	result poker.ActionResult,
-) {
-	response := fmt.Sprintf(
-		"You have $%d in chips.\n",
-		result.Amount,
-	)
-
-	sendPlayerAction(clientMessage, response, result)
-
-	logPlayerAction(clientMessage.client, result)
 }
 
 func (server *Server) handleFold(

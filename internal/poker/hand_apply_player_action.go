@@ -20,32 +20,26 @@ func (hand *Hand) ApplyPlayerAction(action *PlayerAction) (ActionResult, error) 
 	var err error
 
 	switch action.Action {
-	case Call:
-		amountToCall := hand.currentCall - player.currentBet
-		action.Amount = amountToCall
-
-		err = hand.call(player)
+	case Fold:
+		hand.fold(player)
 	case Check:
 		if player.GetCurrentBet() != hand.currentCall {
 			err = errors.New("you must meet the current call to check")
 		} else {
 			player.hasActed = true
 		}
-	case Fold:
-		hand.fold(player)
+	case Call:
+		amountToCall := hand.currentCall - player.currentBet
+		action.Amount = amountToCall
+
+		err = hand.call(player)
 	case Bet:
 		hand.bet(player, action.Amount)
 	case Raise:
 		hand.raise(player, action.Amount)
 	case AllIn:
-		hand.allIn(player)
+		hand.allIn(player) // this is likely a bug here!!!
 		action.Amount = player.GetChips()
-	case Chips:
-		action.Amount = player.GetChips()
-	case Hole:
-		result.Message = FormatPrivateCards(player.GetHoleCards())
-	case Menu:
-		result.Message = hand.GetPlayerActionOptions(player)
 	default:
 		return result, errors.New("action not implemented")
 	}
@@ -60,20 +54,12 @@ func (hand *Hand) ApplyPlayerAction(action *PlayerAction) (ActionResult, error) 
 
 	if hand.bettingRoundComplete() {
 		result.BettingRoundEnded = true
-
-		hand.currentCall = 0
-
-		for _, player := range hand.players {
-			player.currentBet = 0
-			player.hasActed = false
-		}
+		hand.resetBettingRound()
 
 		return result, nil
 	}
 
-	if hand.turnAdvancingAction(result) {
-		hand.advanceCurrentPlayer()
-	}
+	hand.advanceCurrentPlayer()
 
 	return result, nil
 }
@@ -94,13 +80,16 @@ func (hand *Hand) advanceCurrentPlayer() {
 	}
 }
 
-func (hand *Hand) turnAdvancingAction(result ActionResult) bool {
-	return result.Action != Chips &&
-		result.Action != Hole &&
-		result.Action != Menu
-}
-
 func (hand *Hand) SetFirstPostFlopPlayer() {
 	hand.currentPlayerIndex = hand.dealerIndex
 	hand.advanceCurrentPlayer()
+}
+
+func (hand *Hand) resetBettingRound() {
+	hand.currentCall = 0
+
+	for _, player := range hand.players {
+		player.currentBet = 0
+		player.hasActed = false
+	}
 }

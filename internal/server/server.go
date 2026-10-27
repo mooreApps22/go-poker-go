@@ -54,24 +54,33 @@ func (server *Server) Run() {
 			)
 			continue
 		}
-		client := NewClient(server.nextClientID, connection)
-		server.nextClientID++
 
-		logClientConnected(client)
-		server.clients = append(server.clients, client)
-
-		response := server.gameHost.ClientJoined(client.id)
-		sendErr := sendClientResponse(client, response)
-		if sendErr != nil {
-			logClientError(
-				client,
-				"Error at host prompting player name",
-				sendErr,
-			)
-			client.connection.Close()
-			continue
-		}
-
-		go server.receiveClientMessages(client, server.clientMessageChannel)
+		server.handleNewClient(connection)
 	}
+}
+
+func (server *Server) handleNewClient(connection net.Conn) {
+	client := NewClient(server.nextClientID, connection)
+	server.nextClientID++
+
+	logClientConnected(client)
+	server.clients = append(server.clients, client)
+
+	response := server.gameHost.ClientJoined(client.id)
+
+	sendErr := sendClientResponse(client, response)
+	if sendErr != nil {
+		logClientError(
+			client,
+			"Error at host prompting player name",
+			sendErr,
+		)
+		client.connection.Close()
+		return
+	}
+
+	go server.receiveClientMessages(
+		client,
+		server.clientMessageChannel,
+	)
 }

@@ -43,12 +43,12 @@ func (game *Game) SetUpNewHand() {
 	game.hand.currentPlayerIndex = game.hand.utgIndex
 }
 
-func (game *Game) GetHand() *Hand {
-	return &game.hand
-}
-
 func (game *Game) RotateDealer() {
 	game.dealerIndex = (game.dealerIndex + 1) % len(game.players)
+}
+
+func (game *Game) GetHand() *Hand {
+	return &game.hand
 }
 
 func (game *Game) GetDealerIndex() int {
