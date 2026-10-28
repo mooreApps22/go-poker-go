@@ -4,7 +4,7 @@ import (
 	"errors"
 )
 
-func (hand *Hand) ApplyPlayerAction(action *PlayerAction) (ActionResult, error) {
+func (hand *Hand) ApplyPlayerAction(action PlayerAction) (ActionResult, error) {
 	var result ActionResult
 
 	if hand.IsOver() {
@@ -29,17 +29,17 @@ func (hand *Hand) ApplyPlayerAction(action *PlayerAction) (ActionResult, error) 
 			player.hasActed = true
 		}
 	case Call:
-		amountToCall := hand.currentCall - player.currentBet
-		action.Amount = amountToCall
-
+		result.Amount = hand.currentCall - player.currentBet
 		err = hand.call(player)
 	case Bet:
+		result.Amount = action.Amount
 		hand.bet(player, action.Amount)
 	case Raise:
+		result.Amount = action.Amount
 		hand.raise(player, action.Amount)
 	case AllIn:
-		hand.allIn(player) // this is likely a bug here!!!
 		action.Amount = player.GetChips()
+		hand.allIn(player)
 	default:
 		return result, errors.New("action not implemented")
 	}
@@ -50,7 +50,6 @@ func (hand *Hand) ApplyPlayerAction(action *PlayerAction) (ActionResult, error) 
 
 	result.Action = action.Action
 	result.Player = player
-	result.Amount = action.Amount
 
 	if hand.bettingRoundComplete() {
 		result.BettingRoundEnded = true

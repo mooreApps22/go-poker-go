@@ -47,7 +47,7 @@ func (server *Server) handlePlayerAction(
 	hand := server.gameHost.GetHand()
 
 	// APPLY PLAYER ACTION
-	result, err := hand.ApplyPlayerAction(&playerAction)
+	result, err := hand.ApplyPlayerAction(playerAction)
 	if err != nil {
 		sendErr := sendClientResponse(
 			clientMessage.client,
@@ -63,20 +63,7 @@ func (server *Server) handlePlayerAction(
 		return
 	}
 
-	switch result.Action {
-	case poker.Fold:
-		server.handleFold(clientMessage, result)
-	case poker.Check:
-		server.handleCheck(clientMessage, result)
-	case poker.Call:
-		server.handleCall(clientMessage, result)
-	case poker.Bet:
-		server.handleBet(clientMessage, result)
-	case poker.Raise:
-		server.handleRaise(clientMessage, result)
-	case poker.AllIn:
-		server.handleAllIn(clientMessage, result)
-	}
+	server.handleActionResult(clientMessage, result)
 
 	if result.BettingRoundEnded {
 
@@ -113,69 +100,41 @@ func (server *Server) handlePlayerAction(
 	}
 }
 
-func (server *Server) handleFold(
+func (server *Server) handleActionResult(
 	clientMessage ClientMessage,
 	result poker.ActionResult,
 ) {
-	server.broadcastActionResult(result, "folded.\n")
+	var message string
 
-	logPlayerAction(clientMessage.client, result)
-}
+	switch result.Action {
+	case poker.Fold:
+		message = "folded.\n"
+	case poker.Check:
+		message = "checked.\n"
+	case poker.Call:
+		message = fmt.Sprintf(
+			"called $%d.\n",
+			result.Amount,
+		)
+	case poker.Bet:
+		message = fmt.Sprintf(
+			"bet $%d.\n",
+			result.Amount,
+		)
+	case poker.Raise:
+		message = fmt.Sprintf(
+			"raised $%d.\n",
+			result.Amount,
+		)
+	case poker.AllIn:
+		message = fmt.Sprintf(
+			"goes all in with $%d.\n",
+			result.Amount,
+		)
+	default:
+		return
+	}
 
-func (server *Server) handleCheck(
-	clientMessage ClientMessage,
-	result poker.ActionResult,
-) {
-	server.broadcastActionResult(result, "checked.\n")
-
-	logPlayerAction(clientMessage.client, result)
-}
-
-func (server *Server) handleCall(
-	clientMessage ClientMessage,
-	result poker.ActionResult,
-) {
-	server.broadcastActionResult(result, fmt.Sprintf(
-		"called $%d.\n",
-		result.Amount,
-	))
-
-	logPlayerAction(clientMessage.client, result)
-}
-
-func (server *Server) handleBet(
-	clientMessage ClientMessage,
-	result poker.ActionResult,
-) {
-	server.broadcastActionResult(result, fmt.Sprintf(
-		"bet $%d.\n",
-		result.Amount,
-	))
-
-	logPlayerAction(clientMessage.client, result)
-}
-
-func (server *Server) handleRaise(
-	clientMessage ClientMessage,
-	result poker.ActionResult,
-) {
-	server.broadcastActionResult(result, fmt.Sprintf(
-		"raised $%d.\n",
-		result.Amount,
-	))
-
-	logPlayerAction(clientMessage.client, result)
-}
-
-func (server *Server) handleAllIn(
-	clientMessage ClientMessage,
-	result poker.ActionResult,
-) {
-
-	server.broadcastActionResult(result, fmt.Sprintf(
-		"goes all in with $%d.\n",
-		result.Amount,
-	))
-
+	server.broadcastActionResult(result, message)
 	logPlayerAction(clientMessage.client, result)
 }
