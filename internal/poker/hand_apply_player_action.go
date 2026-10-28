@@ -38,8 +38,7 @@ func (hand *Hand) ApplyPlayerAction(action PlayerAction) (ActionResult, error) {
 		result.Amount = action.Amount
 		hand.raise(player, action.Amount)
 	case AllIn:
-		action.Amount = player.GetChips()
-		hand.allIn(player)
+		action.Amount = hand.allIn(player)
 	default:
 		return result, errors.New("action not implemented")
 	}
@@ -50,6 +49,11 @@ func (hand *Hand) ApplyPlayerAction(action PlayerAction) (ActionResult, error) {
 
 	result.Action = action.Action
 	result.Player = player
+
+	if hand.IsOver() {
+		result.HandEnded = true
+		return result, nil
+	}
 
 	if hand.bettingRoundComplete() {
 		result.BettingRoundEnded = true

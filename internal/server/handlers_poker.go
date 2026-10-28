@@ -21,24 +21,6 @@ func (server *Server) handleInvalidPokerAction(
 	}
 }
 
-func sendPlayerAction(
-	clientMessage ClientMessage,
-	response string,
-	result poker.ActionResult,
-) {
-	sendErr := sendClientResponse(clientMessage.client, response)
-	if sendErr != nil {
-		logClientError(
-			clientMessage.client,
-			"Error sending client response:",
-			sendErr,
-		)
-		return
-	}
-
-	logPlayerAction(clientMessage.client, result)
-}
-
 func (server *Server) handlePlayerAction(
 	clientMessage ClientMessage,
 	playerAction poker.PlayerAction,
@@ -64,6 +46,18 @@ func (server *Server) handlePlayerAction(
 	}
 
 	server.handleActionResult(clientMessage, result)
+
+	if result.HandEnded {
+		server.broadcast("Hand has ended.\n")
+		hand.CreatePots()
+		hand.PickWinners()
+		hand.AwardPots()
+
+		server.broadcastPots(hand)
+		server.broadcastWinnersIfHandEndsEarly(hand)
+		server.startNextHand()
+		return
+	}
 
 	if result.BettingRoundEnded {
 

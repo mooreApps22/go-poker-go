@@ -9,4 +9,6 @@ func (hand *Hand) ResetFoldedHands() {
 func (hand *Hand) PostBlinds() {
 	hand.players[hand.smallBlindIndex].PlaceBet(SmallBlindBet)
 	hand.players[hand.bigBlindIndex].PlaceBet(BigBlindBet)
+
+	hand.currentCall = BigBlindBet
 }

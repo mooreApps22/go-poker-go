@@ -171,3 +171,37 @@ func (server *Server) broadcastWinners(hand *poker.Hand) {
 		}
 	}
 }
+
+func (server *Server) broadcastWinnersIfHandEndsEarly(hand *poker.Hand) {
+	for potIndex, pot := range hand.GetPots() {
+		winners := pot.GetWinners()
+
+		if len(winners) == 0 {
+			continue
+		}
+
+		winnings := pot.GetValue() / int64(len(winners))
+
+		var potName string
+
+		if potIndex == 0 {
+			potName = "Main Pot"
+		} else {
+			potName = fmt.Sprintf(
+				"Side Pot %c",
+				'A'+rune(potIndex-1),
+			)
+		}
+
+		for _, winner := range winners {
+			response := fmt.Sprintf(
+				"%s wins $%d from the %s.\n",
+				winner.GetName(),
+				winnings,
+				potName,
+			)
+
+			server.broadcast(response)
+		}
+	}
+}

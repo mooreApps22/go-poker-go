@@ -27,6 +27,7 @@ type ActionResult struct {
 	Amount            int64
 	BettingRoundEnded bool
 	Message           string
+	HandEnded         bool
 }
 
 func (action ActionType) String() string {

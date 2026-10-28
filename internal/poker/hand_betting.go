@@ -150,7 +150,7 @@ func (hand *Hand) CanContinueBetting() bool {
 	return activePlayerCount >= 2
 }
 
-func (hand *Hand) allIn(player *Player) {
+func (hand *Hand) allIn(player *Player) int64 {
 	allInAmount := player.chips
 
 	player.PlaceBet(allInAmount)
@@ -167,4 +167,5 @@ func (hand *Hand) allIn(player *Player) {
 
 	player.hasAllIn = true
 	player.hasActed = true
+	return allInAmount
 }
