@@ -49,9 +49,7 @@ func (server *Server) handlePlayerAction(
 
 	if result.HandEnded {
 		server.broadcast("Hand has ended.\n")
-		hand.CreatePots()
-		hand.PickWinners()
-		hand.AwardPots()
+		hand.ResolvePots()
 
 		server.broadcastPots(hand)
 		server.broadcastWinnersIfHandEndsEarly(hand)
@@ -67,7 +65,7 @@ func (server *Server) handlePlayerAction(
 			return
 		}
 
-		potValue := server.gameHost.GetHand().GetCurrentPotValue()
+		potValue := hand.GetCurrentPotValue()
 		potValueResponse := fmt.Sprintf("Current Pot Value: $%d.\n", potValue)
 		server.broadcast(potValueResponse)
 
@@ -76,7 +74,6 @@ func (server *Server) handlePlayerAction(
 			formattedCommunityCards := poker.FormatPublicCards(communityCards)
 
 			server.broadcast(hand.GetPhase().String())
-
 			server.broadcast(formattedCommunityCards)
 
 			hand.SetFirstPostFlopPlayer()
@@ -84,6 +81,7 @@ func (server *Server) handlePlayerAction(
 
 			server.broadcastTurn(currentPlayer)
 		} else {
+			hand.ResolvePots()
 			server.broadcastShowdown(hand)
 			server.startNextHand()
 		}

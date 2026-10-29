@@ -86,13 +86,20 @@ func (server *Server) sendPrivateHoleCards() {
 }
 
 func (server *Server) broadcastShowdown(hand *poker.Hand) {
-	server.broadcast("SHOWDOWN\n")
-	hand.CreatePots()
-	hand.PickWinners()
-	hand.AwardPots()
-
+	server.broadcast("SHOWDOWN!!!\n")
 	server.broadcastPots(hand)
 	server.broadcastWinners(hand)
+}
+
+func getPotName(potIndex int) string {
+	if potIndex == 0 {
+		return "Main Pot"
+	}
+
+	return fmt.Sprintf(
+		"Side Pot %c",
+		'A'+rune(potIndex-1),
+	)
 }
 
 func (server *Server) broadcastPots(hand *poker.Hand) {
@@ -106,30 +113,13 @@ func (server *Server) broadcastPots(hand *poker.Hand) {
 			)
 		} else {
 			response = fmt.Sprintf(
-				"Side Pot %c: $%d\n",
-				'A'+rune(potIndex-1),
+				"%s: $%d\n",
+				getPotName(potIndex),
 				pot.GetValue(),
 			)
 		}
 
 		server.broadcast(response)
-		/*
-			eligiblePlayers := pot.GetEligiblePlayers()
-
-			response = "Eligible: "
-
-			for playerIndex, player := range eligiblePlayers {
-				if playerIndex > 0 {
-					response += ", "
-				}
-
-				response += player.GetName()
-			}
-
-			response += "\n"
-
-			server.broadcast(response)
-		*/
 	}
 }
 
@@ -143,16 +133,7 @@ func (server *Server) broadcastWinners(hand *poker.Hand) {
 
 		winnings := pot.GetValue() / int64(len(winners))
 
-		var potName string
-
-		if potIndex == 0 {
-			potName = "Main Pot"
-		} else {
-			potName = fmt.Sprintf(
-				"Side Pot %c",
-				'A'+rune(potIndex-1),
-			)
-		}
+		potName := getPotName(potIndex)
 
 		for _, winner := range winners {
 			response := fmt.Sprintf(
@@ -182,16 +163,7 @@ func (server *Server) broadcastWinnersIfHandEndsEarly(hand *poker.Hand) {
 
 		winnings := pot.GetValue() / int64(len(winners))
 
-		var potName string
-
-		if potIndex == 0 {
-			potName = "Main Pot"
-		} else {
-			potName = fmt.Sprintf(
-				"Side Pot %c",
-				'A'+rune(potIndex-1),
-			)
-		}
+		potName := getPotName(potIndex)
 
 		for _, winner := range winners {
 			response := fmt.Sprintf(

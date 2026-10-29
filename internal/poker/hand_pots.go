@@ -1,7 +1,6 @@
 package poker
 
 import (
-	"fmt"
 	"slices"
 )
 
@@ -27,7 +26,7 @@ func (hand *Hand) collectContributionLevels() {
 	hand.contributionLevels = slices.Compact(hand.contributionLevels)
 }
 
-func (hand *Hand) countPlayersWithContributionLevel(contributeLevel int64) int {
+func (hand *Hand) countPlayersAtOrAboveContributionLevel(contributeLevel int64) int {
 	count := 0
 	for _, player := range hand.players {
 		if player.totalContribution >= contributeLevel {
@@ -49,30 +48,6 @@ func (hand *Hand) getEligiblePlayers(level int64) []*Player {
 	return eligiblePlayers
 }
 
-func (hand *Hand) outputPotsData() {
-	for potIndex, pot := range hand.pots {
-		if potIndex == 0 {
-			fmt.Print("Main Pot : $")
-		} else {
-			fmt.Print("Side Pot ")
-		}
-
-		switch potIndex {
-		case 1:
-			fmt.Print("A: $")
-		case 2:
-			fmt.Print("B: $")
-		case 3:
-			fmt.Print("C: $")
-		}
-
-		fmt.Print(pot.value)
-		fmt.Println()
-		fmt.Print("Eligible: ", pot.eligiblePlayers)
-		fmt.Println()
-	}
-}
-
 func (hand *Hand) getPlayerAtOrAboveContributionLevel(level int64) *Player {
 	for _, player := range hand.players {
 		if player.totalContribution >= level {
@@ -83,21 +58,25 @@ func (hand *Hand) getPlayerAtOrAboveContributionLevel(level int64) *Player {
 }
 
 func (hand *Hand) CreatePots() {
+	hand.contributionLevels = nil
+	hand.pots = nil
 	hand.collectContributionLevels()
+
 	var sidePot int64
 	var previousLevel int64
 
 	for _, level := range hand.contributionLevels {
 
-		numberOfPlayerWithLevel := hand.countPlayersWithContributionLevel(level)
+		numberOfPlayerAtOrAboveLevel :=
+			hand.countPlayersAtOrAboveContributionLevel(level)
 
 		sidePot, previousLevel = calculateSidePot(
 			level,
 			previousLevel,
-			int(numberOfPlayerWithLevel),
+			numberOfPlayerAtOrAboveLevel,
 		)
 
-		if numberOfPlayerWithLevel == 1 {
+		if numberOfPlayerAtOrAboveLevel == 1 {
 			player := hand.getPlayerAtOrAboveContributionLevel(level)
 			if player != nil {
 				player.CollectWinnings(sidePot) // return chips
@@ -122,8 +101,6 @@ func (hand *Hand) CreatePots() {
 			hand.pots = append(hand.pots, pot)
 		}
 	}
-
-	hand.outputPotsData()
 }
 
 func (hand *Hand) PickWinners() {
@@ -176,4 +153,10 @@ func (hand *Hand) AwardPots() {
 			winner.CollectWinnings(winnings)
 		}
 	}
+}
+
+func (hand *Hand) ResolvePots() {
+	hand.CreatePots()
+	hand.PickWinners()
+	hand.AwardPots()
 }
