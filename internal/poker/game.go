@@ -51,6 +51,8 @@ func (game *Game) GetHand() *Hand {
 	return &game.hand
 }
 
-func (game *Game) GetDealerIndex() int {
-	return game.dealerIndex
+func (game *Game) GetNextDealer() *Player {
+	nextDealerIndex := (game.dealerIndex + 1) % len(game.players)
+
+	return game.players[nextDealerIndex]
 }

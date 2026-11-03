@@ -53,7 +53,7 @@ func (server *Server) handlePlayerAction(
 
 		server.broadcastPots(hand)
 		server.broadcastWinnersIfHandEndsEarly(hand)
-		server.startNextHand()
+		server.waitForNextDeal()
 		return
 	}
 
@@ -83,7 +83,7 @@ func (server *Server) handlePlayerAction(
 		} else {
 			hand.ResolvePots()
 			server.broadcastShowdown(hand)
-			server.startNextHand()
+			server.waitForNextDeal()
 		}
 	} else {
 		currentPlayer := hand.GetCurrentPlayer()

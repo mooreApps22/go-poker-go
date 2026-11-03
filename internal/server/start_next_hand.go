@@ -2,8 +2,8 @@ package server
 
 import (
 	"fmt"
-
 	"github.com/mooreApps22/go-poker-go/internal/poker"
+	"strings"
 )
 
 func (server *Server) startNextHand() {
@@ -40,4 +40,48 @@ func (server *Server) startNextHand() {
 	server.sendPrivateHoleCards()
 
 	server.broadcastTurn(currentPlayer)
+}
+
+//New
+
+func (server *Server) waitForNextDeal() {
+	nextDealer := server.gameHost.GetNextDealer()
+
+	server.gameHost.SetWaitingForDeal(true)
+
+	server.broadcast(
+		fmt.Sprintf(
+			"Waiting for %s to deal the next hand.\n",
+			nextDealer.GetName(),
+		),
+	)
+
+}
+
+func (server *Server) handleDealCommand(clientMessage ClientMessage) {
+	nextDealer := server.gameHost.GetNextDealer()
+
+	if clientMessage.client.id != nextDealer.GetID() {
+		sendClientResponse(
+			clientMessage.client,
+			"Waiting for the dealer to start the next hand.\n",
+		)
+		return
+	}
+
+	command := strings.ToUpper(
+		strings.TrimSpace(clientMessage.message),
+	)
+
+	switch command {
+	case "", "D", "DEAL":
+		server.gameHost.SetWaitingForDeal(false)
+		server.startNextHand()
+	default:
+		sendClientResponse(
+			clientMessage.client,
+			"Type 'deal' to deal.\n",
+		)
+	}
+
 }

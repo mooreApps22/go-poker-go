@@ -9,6 +9,7 @@ import (
 )
 
 func parsePokerClientMessage(clientMessage ClientMessage) (poker.PlayerAction, error) {
+	// if server is waiting for deal
 	fields := strings.Fields(clientMessage.message)
 	if len(fields) == 0 {
 		return poker.PlayerAction{}, errors.New("empty player action")

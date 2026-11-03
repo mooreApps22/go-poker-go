@@ -20,10 +20,11 @@ type LobbyAction struct {
 
 type Host struct {
 	expectedNumberOfPlayers int
-	started                 bool
 	players                 []*poker.Player
 	lobbyOwner              *poker.Player
 	game                    *poker.Game
+	started                 bool
+	waitingForDeal          bool
 }
 
 func NewHost() Host {
@@ -110,4 +111,8 @@ func (host *Host) GetHand() *poker.Hand {
 
 func (host *Host) GetGame() poker.Game {
 	return *host.game
+}
+
+func (host *Host) GetNextDealer() *poker.Player {
+	return host.game.GetNextDealer()
 }

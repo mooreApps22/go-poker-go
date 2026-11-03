@@ -17,6 +17,10 @@ func (server *Server) routeClientMessages(clientMessageChannel chan ClientMessag
 func (server *Server) routeGameClientMessage(
 	clientMessage ClientMessage,
 ) {
+	if server.gameHost.IsWaitingForDeal() {
+		server.handleDealCommand(clientMessage)
+		return
+	}
 	command := strings.ToUpper(
 		strings.TrimSpace(clientMessage.message),
 	)

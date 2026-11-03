@@ -27,3 +27,8 @@ docker-clean:
 
 test-poker:
 	go test -v ./internal/poker
+alias:
+	alias poker='terminator -u -l poker'
+ssh:
+	eval "$(ssh-agent -s)"
+	ssh-add ~/.ssh/id_ed25519

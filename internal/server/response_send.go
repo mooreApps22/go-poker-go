@@ -151,6 +151,16 @@ func (server *Server) broadcastWinners(hand *poker.Hand) {
 			server.broadcast(cardResponse)
 		}
 	}
+
+	server.broadcast("\n")
+
+	response := fmt.Sprintf(
+		"Waiting for %s to start the next hand.\n",
+		hand.GetSmallBlindPlayer().GetName(),
+	)
+
+	server.broadcast(response)
+	server.broadcast("\n")
 }
 
 func (server *Server) broadcastWinnersIfHandEndsEarly(hand *poker.Hand) {
@@ -176,4 +186,15 @@ func (server *Server) broadcastWinnersIfHandEndsEarly(hand *poker.Hand) {
 			server.broadcast(response)
 		}
 	}
+
+	server.broadcast("\n")
+
+	response := fmt.Sprintf(
+		"Waiting for %s to start the next hand.\n",
+		hand.GetSmallBlindPlayer().GetName(),
+	)
+
+	server.broadcast(response)
+
+	server.broadcast("\n")
 }
