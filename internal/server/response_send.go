@@ -198,3 +198,27 @@ func (server *Server) broadcastWinnersIfHandEndsEarly(hand *poker.Hand) {
 
 	server.broadcast("\n")
 }
+
+func (server *Server) broadcastWaitingForDealer(nextDealer *poker.Player) {
+	for _, client := range server.clients {
+		var response string
+
+		if client.id == nextDealer.GetID() {
+			response = "Waiting for YOU to deal the next hand."
+		} else {
+			response = fmt.Sprintf(
+				"Waiting for %s to deal the next hand.\n",
+				nextDealer.GetName(),
+			)
+		}
+
+		sendErr := sendClientResponse(client, response)
+		if sendErr != nil {
+			logClientError(
+				client,
+				"Error broadcasting next dealer",
+				sendErr,
+			)
+		}
+	}
+}

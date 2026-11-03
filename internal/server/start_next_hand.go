@@ -49,12 +49,7 @@ func (server *Server) waitForNextDeal() {
 
 	server.gameHost.SetWaitingForDeal(true)
 
-	server.broadcast(
-		fmt.Sprintf(
-			"Waiting for %s to deal the next hand.\n",
-			nextDealer.GetName(),
-		),
-	)
+	server.broadcastWaitingForDealer(nextDealer)
 
 }
 
